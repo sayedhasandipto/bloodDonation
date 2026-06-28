@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // The Express server URL
-const API_URL = 'http://localhost:5000';
+const API_URL = 'https://blood-donation-server-one-rho.vercel.app';
 
 const api = axios.create({
   baseURL: API_URL,
