@@ -16,7 +16,7 @@ export default function Navbar() {
           <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
             <Menu className="w-5 h-5" />
           </div>
-          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52">
+          <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52 text-gray-800">
             <li><Link href="/donation-requests">Donation Requests</Link></li>
             <li><Link href="/search">Search Donors</Link></li>
             {user && <li><Link href="/funding">Funding</Link></li>}
@@ -28,7 +28,7 @@ export default function Navbar() {
             ) : (
               <>
                 <li><Link href="/dashboard">Dashboard</Link></li>
-                <li><button onClick={logout} className="text-red-500">Log Out</button></li>
+                <li><button onClick={logout} className="text-red-500 hover:text-red-600">Log Out</button></li>
               </>
             )}
           </ul>
@@ -89,14 +89,14 @@ export default function Navbar() {
                 />
               </div>
             </div>
-            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52">
+            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52 text-gray-800">
               <li className="px-4 py-2 pointer-events-none">
-                <span className="text-xs text-gray-400 p-0">Signed in as</span>
-                <span className="text-sm font-bold text-gray-800 p-0">{user.email}</span>
+                <span className="text-xs text-gray-500 p-0">Signed in as</span>
+                <span className="text-sm font-bold text-gray-800 p-0 truncate">{user.email}</span>
               </li>
               <div className="divider my-0"></div>
               <li><Link href="/dashboard">Dashboard</Link></li>
-              <li><button onClick={logout} className="text-red-500">Log Out</button></li>
+              <li><button onClick={logout} className="text-red-500 hover:text-red-600">Log Out</button></li>
             </ul>
           </div>
         )}

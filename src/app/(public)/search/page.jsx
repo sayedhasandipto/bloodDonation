@@ -97,7 +97,7 @@ export default function SearchPage() {
               
               <div className="form-control">
                 <label className="label"><span className="label-text">Blood Group</span></label>
-                <select className="select select-bordered w-full" value={formData.bloodGroup} onChange={(e) => setFormData({...formData, bloodGroup: e.target.value})}>
+                <select className="select select-bordered w-full text-gray-800" value={formData.bloodGroup} onChange={(e) => setFormData({...formData, bloodGroup: e.target.value})}>
                   <option value="">All Groups</option>
                   {BLOOD_GROUPS.map((bg) => (
                     <option key={bg} value={bg}>{bg}</option>
@@ -107,7 +107,7 @@ export default function SearchPage() {
 
               <div className="form-control">
                 <label className="label"><span className="label-text">District</span></label>
-                <select className="select select-bordered w-full" value={formData.district} onChange={handleDistrictChange}>
+                <select className="select select-bordered w-full text-gray-800" value={formData.district} onChange={handleDistrictChange}>
                   <option value="">All Districts</option>
                   {districts.map((d) => (
                     <option key={d.name} value={d.name}>{d.name}</option>
@@ -117,7 +117,7 @@ export default function SearchPage() {
 
               <div className="form-control">
                 <label className="label"><span className="label-text">Upazila</span></label>
-                <select className="select select-bordered w-full" value={formData.upazila} onChange={(e) => setFormData({...formData, upazila: e.target.value})} disabled={!formData.district}>
+                <select className="select select-bordered w-full text-gray-800" value={formData.upazila} onChange={(e) => setFormData({...formData, upazila: e.target.value})} disabled={!formData.district}>
                   <option value="">All Upazilas</option>
                   {upazilas.map((u) => (
                     <option key={u.name} value={u.name}>{u.name}</option>

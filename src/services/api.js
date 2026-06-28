@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// In a real app, this would be your backend URL (e.g. process.env.NEXT_PUBLIC_API_URL)
-const API_URL = 'http://localhost:5000/api';
+// The Express server URL
+const API_URL = 'http://localhost:5000';
 
 const api = axios.create({
   baseURL: API_URL,
@@ -10,7 +10,7 @@ const api = axios.create({
   },
 });
 
-// Add a request interceptor to attach JWT token
+// Add a request interceptor to attach JWT token if needed later
 api.interceptors.request.use(
   (config) => {
     if (typeof window !== 'undefined') {
@@ -26,81 +26,60 @@ api.interceptors.request.use(
   }
 );
 
-// MOCK DATA LAYER
-// For the purpose of the client-side assignment, we will use mock data if the API fails, 
-// or simply use this layer to simulate responses if no backend is running.
-let mockUsers = [
-  { _id: '1', name: 'Admin User', email: 'admin@blood.com', role: 'admin', status: 'active', avatar: 'https://i.ibb.co/68v1r52/admin.png' },
-  { _id: '2', name: 'John Donor', email: 'donor@blood.com', role: 'donor', status: 'active', bloodGroup: 'O+', district: 'Dhaka', upazila: 'Savar', avatar: 'https://i.ibb.co/68v1r52/donor.png' },
-  { _id: '3', name: 'Jane Volunteer', email: 'volunteer@blood.com', role: 'volunteer', status: 'active', avatar: 'https://i.ibb.co/68v1r52/volunteer.png' }
-];
-
-let mockDonationRequests = [
-  { _id: '101', requesterName: 'John Donor', requesterEmail: 'donor@blood.com', recipientName: 'Patient A', recipientDistrict: 'Dhaka', recipientUpazila: 'Savar', hospitalName: 'Dhaka Medical', fullAddress: 'Ward 5, Bed 12', bloodGroup: 'A+', donationDate: '2026-07-01', donationTime: '10:00 AM', requestMessage: 'Urgent surgery', donationStatus: 'pending' },
-  { _id: '102', requesterName: 'John Donor', requesterEmail: 'donor@blood.com', recipientName: 'Patient B', recipientDistrict: 'Chittagong', recipientUpazila: 'Hathazari', hospitalName: 'Chittagong Medical', fullAddress: 'ICU', bloodGroup: 'O-', donationDate: '2026-07-05', donationTime: '02:00 PM', requestMessage: 'Accident case', donationStatus: 'inprogress', donorInfo: { name: 'Alice Good', email: 'alice@test.com' } }
-];
-
-// Mock API functions for UI development
 export const authService = {
   login: async (credentials) => {
-    const user = mockUsers.find(u => u.email === credentials.email);
-    if (user) {
-      if (user.status === 'blocked') throw new Error('User is blocked');
-      // Simulate JWT token structure
-      const mockToken = btoa(JSON.stringify({ email: user.email, role: user.role }));
-      return { data: { token: mockToken, user } };
-    }
-    throw new Error('Invalid credentials');
+    const res = await api.post('/auth/login', credentials);
+    return res.data;
   },
   register: async (userData) => {
-    const newUser = { ...userData, _id: Date.now().toString(), role: 'donor', status: 'active' };
-    mockUsers.push(newUser);
-    const mockToken = btoa(JSON.stringify({ email: newUser.email, role: newUser.role }));
-    return { data: { token: mockToken, user: newUser } };
+    const res = await api.post('/auth/register', userData);
+    return res.data;
   }
 };
 
+// DONATION SERVICE via EXPRESS
 export const donationService = {
   getPendingRequests: async () => {
-    return { data: mockDonationRequests.filter(r => r.donationStatus === 'pending') };
+    // A more advanced backend would have a filter query parameter
+    const res = await api.get('/donations');
+    const pending = res.data?.data?.filter(r => r.donationStatus === 'pending') || [];
+    return { data: pending };
   },
   getAllRequests: async () => {
-    return { data: mockDonationRequests };
+    const res = await api.get('/donations');
+    return res.data;
   },
   getMyRequests: async (email) => {
-    return { data: mockDonationRequests.filter(r => r.requesterEmail === email) };
+    const res = await api.get(`/donations/my-requests/${email}`);
+    return res.data;
   },
   createRequest: async (requestData) => {
-    const newReq = { ...requestData, _id: Date.now().toString(), donationStatus: 'pending' };
-    mockDonationRequests.unshift(newReq);
-    return { data: newReq };
+    const res = await api.post('/donations', requestData);
+    return res.data;
   },
   updateRequestStatus: async (id, status, donorInfo = null) => {
-    const req = mockDonationRequests.find(r => r._id === id);
-    if (req) {
-      req.donationStatus = status;
-      if (donorInfo) req.donorInfo = donorInfo;
-    }
-    return { data: req };
+    const res = await api.patch(`/donations/${id}/status`, { status, donorInfo });
+    return res.data;
   }
 };
 
+// USER SERVICE via EXPRESS
 export const userService = {
   getAllUsers: async () => {
-    return { data: mockUsers };
+    const res = await api.get('/users');
+    return res.data;
   },
   updateUserRole: async (id, role) => {
-    const user = mockUsers.find(u => u._id === id);
-    if (user) user.role = role;
-    return { data: user };
+    const res = await api.patch(`/users/${id}/role`, { role });
+    return res.data;
   },
   updateUserStatus: async (id, status) => {
-    const user = mockUsers.find(u => u._id === id);
-    if (user) user.status = status;
-    return { data: user };
+    const res = await api.patch(`/users/${id}/status`, { status });
+    return res.data;
   }
 };
 
+// MOCK PAYMENT
 let mockPayments = [
   { _id: '201', userId: '2', amount: 50, date: '2026-06-25' },
   { _id: '202', userId: '3', amount: 100, date: '2026-06-26' }

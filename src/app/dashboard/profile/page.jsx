@@ -221,7 +221,7 @@ export default function ProfilePage() {
                 <div className="form-control">
                   <label className="label"><span className="label-text font-medium text-gray-700">Blood Group</span></label>
                   <select 
-                    className="select select-bordered w-full bg-white" 
+                    className="select select-bordered w-full bg-white text-gray-800" 
                     value={formData.bloodGroup}
                     onChange={(e) => setFormData({...formData, bloodGroup: e.target.value})}
                     required
@@ -236,7 +236,7 @@ export default function ProfilePage() {
                 <div className="form-control">
                   <label className="label"><span className="label-text font-medium text-gray-700">District</span></label>
                   <select 
-                    className="select select-bordered w-full bg-white" 
+                    className="select select-bordered w-full bg-white text-gray-800" 
                     value={formData.district}
                     onChange={handleDistrictChange}
                     required
@@ -251,7 +251,7 @@ export default function ProfilePage() {
                 <div className="form-control">
                   <label className="label"><span className="label-text font-medium text-gray-700">Upazila</span></label>
                   <select 
-                    className="select select-bordered w-full bg-white" 
+                    className="select select-bordered w-full bg-white text-gray-800" 
                     value={formData.upazila}
                     onChange={(e) => setFormData({...formData, upazila: e.target.value})}
                     required
