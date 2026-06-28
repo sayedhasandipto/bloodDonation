@@ -101,4 +101,15 @@ export const userService = {
   }
 };
 
+let mockPayments = [
+  { _id: '201', userId: '2', amount: 50, date: '2026-06-25' },
+  { _id: '202', userId: '3', amount: 100, date: '2026-06-26' }
+];
+
+export const paymentService = {
+  getAllPayments: async () => {
+    return { data: mockPayments };
+  }
+};
+
 export default api;
