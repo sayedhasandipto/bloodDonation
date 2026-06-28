@@ -2,205 +2,206 @@
 
 import { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useAuth } from "@/context/AuthContext";
 import { donationService } from "@/services/api";
-import { MapPin, Calendar, Clock, Heart, Droplet, Hospital, User, Info } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { MapPin, Clock, Droplet, User, AlertCircle, CheckCircle } from "lucide-react";
+import { use } from "react";
 
-export default function RequestDetailsPage() {
-  const params = useParams();
+export default function DonationRequestDetails({ params }) {
+  const { id } = use(params);
   const router = useRouter();
   const { user, loading: authLoading } = useAuth();
   
   const [request, setRequest] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [donateLoading, setDonateLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [donating, setDonating] = useState(false);
 
   useEffect(() => {
+    // According to requirements: "If the user is not logged in then redirect the user to the login page"
     if (!authLoading && !user) {
       router.push("/login");
-      return;
     }
+  }, [user, authLoading, router]);
 
-    const fetchDetails = async () => {
-      try {
-        const { data } = await donationService.getAllRequests();
-        const req = data.find(r => r._id === params.id);
-        if (req) {
-          setRequest(req);
-        }
-      } catch (error) {
-        console.error("Error fetching request:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (user) {
-      fetchDetails();
-    }
-  }, [user, authLoading, params.id, router]);
-
-  const handleDonateConfirm = async () => {
-    setDonateLoading(true);
+  const fetchRequestDetails = async () => {
     try {
-      const donorInfo = { name: user.name, email: user.email };
-      await donationService.updateRequestStatus(request._id, "inprogress", donorInfo);
-      setRequest({ ...request, donationStatus: "inprogress", donorInfo });
-      setShowModal(false);
+      setLoading(true);
+      const { data } = await donationService.getRequestById(id);
+      setRequest(data);
     } catch (error) {
-      console.error("Error confirming donation:", error);
+      console.error(error);
     } finally {
-      setDonateLoading(false);
+      setLoading(false);
     }
   };
 
-  if (authLoading || loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-base-200">
-        <span className="loading loading-spinner loading-lg text-error"></span>
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (user) {
+      fetchRequestDetails();
+    }
+  }, [id, user]);
 
-  if (!request) {
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-base-200 text-xl font-bold text-gray-500">
-        Request not found
-      </div>
-    );
-  }
+  const handleDonateConfirm = async (e) => {
+    e.preventDefault();
+    setDonating(true);
+    try {
+      const donorInfo = {
+        name: user.name,
+        email: user.email,
+      };
+      // Status changes pending to inprogress
+      await donationService.updateRequestStatus(id, "inprogress", donorInfo);
+      alert("Thank you! You have committed to donate blood.");
+      setShowModal(false);
+      fetchRequestDetails();
+    } catch (error) {
+      alert("Failed to confirm donation.");
+    } finally {
+      setDonating(false);
+    }
+  };
+
+  if (authLoading || loading) return <div className="min-h-screen flex items-center justify-center"><span className="loading loading-spinner text-[#e11d48] loading-lg"></span></div>;
+  if (!user || !request) return null;
 
   return (
-    <div className="bg-base-200 min-h-screen py-12">
-      <div className="container mx-auto px-4 max-w-4xl">
-        <div className="card bg-base-100 shadow-lg">
-          <div className="card-body p-8 md:p-12">
-            
-            {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 pb-8 border-b border-base-200 gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-16 h-16 rounded-2xl bg-crimson-100 flex items-center justify-center">
-                  <Droplet className="w-8 h-8 text-crimson-600 fill-crimson-600" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold">Blood Request</h1>
-                  <p className="text-gray-500 mt-1">Requested by: <span className="font-semibold">{request.requesterName}</span></p>
-                </div>
+    <div className="bg-gray-50 min-h-screen py-12 px-4">
+      <div className="max-w-4xl mx-auto">
+        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+          
+          {/* Header */}
+          <div className="bg-[#fff1f2] p-8 border-b border-red-100 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 mb-2">
+                <Droplet className="w-6 h-6 text-[#e11d48] fill-[#e11d48]" />
+                <h1 className="text-3xl font-bold text-gray-900">Blood Request</h1>
               </div>
-              <div className="text-right">
-                <span className="text-sm text-gray-500 block mb-1">Blood Group Needed</span>
-                <span className="text-3xl font-black text-crimson-700">{request.bloodGroup}</span>
-              </div>
+              <p className="text-[#e11d48] font-medium flex items-center gap-2">
+                <AlertCircle className="w-4 h-4" /> URGENT NEED
+              </p>
             </div>
-
-            {/* Details Grid */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
-              <div className="space-y-6">
-                <h3 className="text-lg font-bold border-l-4 border-crimson-600 pl-3">Recipient Details</h3>
-                
-                <div className="flex items-start gap-4">
-                  <User className="w-6 h-6 text-gray-400 mt-1" />
-                  <div>
-                    <p className="text-sm text-gray-500">Patient Name</p>
-                    <p className="font-semibold text-lg">{request.recipientName}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <Hospital className="w-6 h-6 text-gray-400 mt-1" />
-                  <div>
-                    <p className="text-sm text-gray-500">Hospital</p>
-                    <p className="font-semibold">{request.hospitalName}</p>
-                    <p className="text-gray-600 mt-1">{request.fullAddress}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <MapPin className="w-6 h-6 text-gray-400 mt-1" />
-                  <div>
-                    <p className="text-sm text-gray-500">Location</p>
-                    <p className="font-semibold">{request.recipientUpazila}, {request.recipientDistrict}</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <h3 className="text-lg font-bold border-l-4 border-crimson-600 pl-3">Donation Schedule & Info</h3>
-                
-                <div className="flex items-start gap-4">
-                  <Calendar className="w-6 h-6 text-gray-400 mt-1" />
-                  <div>
-                    <p className="text-sm text-gray-500">Date</p>
-                    <p className="font-semibold">{new Date(request.donationDate).toLocaleDateString(undefined, { weekday: "long", year: "numeric", month: "long", day: "numeric" })}</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <Clock className="w-6 h-6 text-gray-400 mt-1" />
-                  <div>
-                    <p className="text-sm text-gray-500">Time</p>
-                    <p className="font-semibold">{request.donationTime}</p>
-                  </div>
-                </div>
-                <div className="alert alert-info">
-                  <Info className="w-5 h-5 flex-shrink-0" />
-                  <div>
-                    <p className="font-semibold text-sm mb-1">Message from Requester</p>
-                    <p className="text-sm">{request.requestMessage}</p>
-                  </div>
-                </div>
-              </div>
+            <div className="bg-white px-6 py-4 rounded-xl shadow-sm text-center border border-red-100">
+              <p className="text-sm text-gray-500 font-semibold mb-1">Blood Group Needed</p>
+              <h2 className="text-4xl font-extrabold text-[#e11d48]">{request.bloodGroup}</h2>
             </div>
+          </div>
 
-            {/* Actions */}
-            <div className="flex items-center justify-between pt-8 border-t border-base-200">
-              <span className={`badge badge-lg ${request.donationStatus === "pending" ? "badge-warning" : "badge-success"}`}>
-                Status: {request.donationStatus.toUpperCase()}
-              </span>
+          {/* Details Body */}
+          <div className="p-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
               
-              {request.donationStatus === "pending" && (
-                <button onClick={() => setShowModal(true)} className="btn bg-crimson-600 hover:bg-crimson-700 text-white border-none shadow-lg btn-lg">
-                  <Heart className="w-5 h-5 mr-2" /> Donate Blood
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Patient Details</h3>
+                  <div className="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
+                    <User className="w-5 h-5 text-gray-500 mt-0.5" />
+                    <div>
+                      <p className="font-bold text-gray-900 text-lg">{request.recipientName}</p>
+                      <p className="text-gray-600 text-sm">Recipient Name</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Hospital & Location</h3>
+                  <div className="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
+                    <MapPin className="w-5 h-5 text-blue-500 mt-0.5" />
+                    <div>
+                      <p className="font-bold text-gray-900">{request.hospitalName}</p>
+                      <p className="text-gray-600 text-sm">{request.fullAddress}</p>
+                      <p className="text-gray-500 text-xs mt-1">{request.recipientUpazila}, {request.recipientDistrict}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Time & Date</h3>
+                  <div className="bg-gray-50 rounded-xl p-4 flex items-start gap-3">
+                    <Clock className="w-5 h-5 text-orange-500 mt-0.5" />
+                    <div>
+                      <p className="font-bold text-gray-900">{new Date(request.donationDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
+                      <p className="text-gray-600 text-sm">{request.donationTime}</p>
+                    </div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-2">Contact Details</h3>
+                  <div className="bg-gray-50 rounded-xl p-4">
+                    <p className="text-gray-600 text-sm mb-1">Requested By:</p>
+                    <p className="font-bold text-gray-900">{request.requesterName}</p>
+                    <p className="text-gray-500 text-sm">{request.requesterEmail}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 border-t border-gray-100 pt-8">
+              <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Message from requester</h3>
+              <div className="bg-[#f8fafc] border-l-4 border-[#e11d48] p-5 rounded-r-xl">
+                <p className="text-gray-700 italic">"{request.requestMessage}"</p>
+              </div>
+            </div>
+
+            <div className="mt-10 flex flex-col items-center">
+              {request.donationStatus === "pending" ? (
+                <button 
+                  onClick={() => setShowModal(true)}
+                  className="btn bg-[#e11d48] hover:bg-[#be123c] text-white border-none w-full md:w-auto md:px-16 h-14 text-lg shadow-lg shadow-red-200"
+                >
+                  <Droplet className="w-5 h-5 mr-2" /> Donate Now
                 </button>
+              ) : (
+                <div className="bg-gray-100 text-gray-600 px-8 py-4 rounded-xl flex items-center gap-3 font-semibold w-full justify-center">
+                  <CheckCircle className="w-6 h-6 text-green-500" />
+                  This request is currently {request.donationStatus}
+                </div>
               )}
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      {/* Donate Modal */}
+      {showModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl w-full max-w-md overflow-hidden shadow-2xl">
+            <div className="bg-[#fff1f2] p-6 border-b border-red-100 flex justify-between items-center">
+              <h3 className="font-bold text-xl text-gray-900">Confirm Donation</h3>
+              <button onClick={() => setShowModal(false)} className="btn btn-sm btn-circle btn-ghost">✕</button>
+            </div>
+            
+            <div className="p-6">
+              <p className="text-gray-600 mb-6">You are about to commit to donating blood. Please review your details below.</p>
+              
+              <form onSubmit={handleDonateConfirm} className="space-y-4">
+                <div className="form-control">
+                  <label className="label"><span className="label-text font-medium text-gray-700">Donor Name</span></label>
+                  <input type="text" value={user.name} readOnly className="input input-bordered bg-gray-50 text-gray-500 cursor-not-allowed" />
+                </div>
+                
+                <div className="form-control">
+                  <label className="label"><span className="label-text font-medium text-gray-700">Donor Email</span></label>
+                  <input type="email" value={user.email} readOnly className="input input-bordered bg-gray-50 text-gray-500 cursor-not-allowed" />
+                </div>
+
+                <button 
+                  type="submit" 
+                  className="btn bg-[#e11d48] hover:bg-[#be123c] text-white border-none w-full mt-4"
+                  disabled={donating}
+                >
+                  {donating ? <span className="loading loading-spinner"></span> : "Confirm Donation"}
+                </button>
+              </form>
             </div>
           </div>
         </div>
+      )}
 
-        {/* Donation Modal */}
-        {showModal && (
-          <dialog className="modal modal-open">
-            <div className="modal-box">
-              <h3 className="font-bold text-xl mb-4">Confirm Donation</h3>
-              <p className="text-gray-600 mb-4">
-                Please confirm your details to proceed with the blood donation for <span className="font-bold">{request.recipientName}</span>.
-              </p>
-              
-              <div className="form-control mb-3">
-                <label className="label"><span className="label-text">Donor Name</span></label>
-                <input type="text" className="input input-bordered w-full" value={user?.name || ""} readOnly />
-              </div>
-              <div className="form-control mb-3">
-                <label className="label"><span className="label-text">Donor Email</span></label>
-                <input type="email" className="input input-bordered w-full" value={user?.email || ""} readOnly />
-              </div>
-
-              <div className="alert alert-warning text-sm mt-4">
-                <Info className="w-5 h-5 flex-shrink-0" />
-                <span>By confirming, you commit to being present at {request.hospitalName} on {new Date(request.donationDate).toLocaleDateString()} at {request.donationTime}.</span>
-              </div>
-
-              <div className="modal-action">
-                <button className="btn btn-ghost" onClick={() => setShowModal(false)}>Cancel</button>
-                <button className="btn bg-crimson-600 hover:bg-crimson-700 text-white border-none" onClick={handleDonateConfirm} disabled={donateLoading}>
-                  {donateLoading ? <span className="loading loading-spinner loading-sm"></span> : "Confirm Donation"}
-                </button>
-              </div>
-            </div>
-            <form method="dialog" className="modal-backdrop">
-              <button onClick={() => setShowModal(false)}>close</button>
-            </form>
-          </dialog>
-        )}
-      </div>
     </div>
   );
 }

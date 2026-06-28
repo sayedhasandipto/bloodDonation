@@ -84,7 +84,7 @@ export default function SearchPage() {
       <div className="container mx-auto px-4 max-w-6xl">
         
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Search Donors</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Search Donors</h1>
           <p className="text-gray-600 max-w-2xl mx-auto">
             Find registered blood donors in your area. Use the filters below to find exactly what you need.
           </p>
@@ -96,7 +96,7 @@ export default function SearchPage() {
             <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
               
               <div className="form-control">
-                <label className="label"><span className="label-text">Blood Group</span></label>
+                <label className="label"><span className="label-text text-gray-700 font-medium">Blood Group</span></label>
                 <select className="select select-bordered w-full text-gray-800" value={formData.bloodGroup} onChange={(e) => setFormData({...formData, bloodGroup: e.target.value})}>
                   <option value="">All Groups</option>
                   {BLOOD_GROUPS.map((bg) => (
@@ -106,7 +106,7 @@ export default function SearchPage() {
               </div>
 
               <div className="form-control">
-                <label className="label"><span className="label-text">District</span></label>
+                <label className="label"><span className="label-text text-gray-700 font-medium">District</span></label>
                 <select className="select select-bordered w-full text-gray-800" value={formData.district} onChange={handleDistrictChange}>
                   <option value="">All Districts</option>
                   {districts.map((d) => (
@@ -116,7 +116,7 @@ export default function SearchPage() {
               </div>
 
               <div className="form-control">
-                <label className="label"><span className="label-text">Upazila</span></label>
+                <label className="label"><span className="label-text text-gray-700 font-medium">Upazila</span></label>
                 <select className="select select-bordered w-full text-gray-800" value={formData.upazila} onChange={(e) => setFormData({...formData, upazila: e.target.value})} disabled={!formData.district}>
                   <option value="">All Upazilas</option>
                   {upazilas.map((u) => (

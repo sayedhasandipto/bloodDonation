@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { donationService } from "@/services/api";
 import { Droplet, MapPin, Calendar, Activity } from "lucide-react";
+import Link from "next/link";
 
 export default function AllRequestsPage() {
   const { user } = useAuth();
@@ -113,11 +114,27 @@ export default function AllRequestsPage() {
                       )}
                     </div>
                   </td>
-                  {user?.role === 'admin' && (
+                  {user?.role === 'admin' || user?.role === 'volunteer' ? (
                     <td>
-                      <button className="btn btn-xs btn-outline">View Details</button>
+                      <div className="flex gap-2">
+                        {user?.role === 'admin' && (
+                          <>
+                            <Link href={`/dashboard/my-donation-requests/${r._id}`} className="btn btn-xs btn-outline btn-info">Edit</Link>
+                            <button 
+                              onClick={async () => {
+                                if(window.confirm("Are you sure?")) {
+                                  await donationService.deleteRequest(r._id);
+                                  setRequests(requests.filter(req => req._id !== r._id));
+                                }
+                              }} 
+                              className="btn btn-xs btn-outline btn-error"
+                            >Delete</button>
+                          </>
+                        )}
+                        <Link href={`/donation-requests/${r._id}`} className="btn btn-xs btn-outline">View</Link>
+                      </div>
                     </td>
-                  )}
+                  ) : null}
                 </tr>
               ))}
               {requests.length === 0 && (

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { authService } from "@/services/api";
+import { authService, userService } from "@/services/api";
 import { useRouter } from "next/navigation";
 
 const AuthContext = createContext();
@@ -70,12 +70,24 @@ export const AuthProvider = ({ children }) => {
     router.push("/login");
   };
 
+  const updateUser = async (updateData) => {
+    try {
+      const { data: updatedUser } = await userService.updateProfile(user._id, updateData);
+      localStorage.setItem("user", JSON.stringify(updatedUser));
+      setUser(updatedUser);
+      return { success: true };
+    } catch (error) {
+      throw new Error(error.response?.data?.error || "Failed to update profile");
+    }
+  };
+
   const value = {
     user,
     loading,
     login,
     register,
     logout,
+    updateUser,
   };
 
   return (

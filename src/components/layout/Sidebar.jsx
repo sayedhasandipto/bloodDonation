@@ -26,20 +26,20 @@ export default function Sidebar() {
   const adminLinks = [
     { name: "Admin Home", href: "/dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
     { name: "All Users", href: "/dashboard/all-users", icon: <Users className="w-5 h-5" /> },
-    { name: "All Requests", href: "/dashboard/all-requests", icon: <Droplet className="w-5 h-5" /> },
+    { name: "All Requests", href: "/dashboard/all-blood-donation-request", icon: <Droplet className="w-5 h-5" /> },
     { name: "Content Management", href: "/dashboard/content", icon: <FileText className="w-5 h-5" /> },
   ];
 
   const volunteerLinks = [
     { name: "Volunteer Home", href: "/dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
-    { name: "All Requests", href: "/dashboard/all-requests", icon: <Droplet className="w-5 h-5" /> },
+    { name: "All Requests", href: "/dashboard/all-blood-donation-request", icon: <Droplet className="w-5 h-5" /> },
     { name: "Content Management", href: "/dashboard/content", icon: <FileText className="w-5 h-5" /> },
   ];
 
   const donorLinks = [
     { name: "Donor Home", href: "/dashboard", icon: <LayoutDashboard className="w-5 h-5" /> },
-    { name: "My Requests", href: "/dashboard/my-requests", icon: <List className="w-5 h-5" /> },
-    { name: "Create Request", href: "/dashboard/create-request", icon: <PlusCircle className="w-5 h-5" /> },
+    { name: "My Requests", href: "/dashboard/my-donation-requests", icon: <List className="w-5 h-5" /> },
+    { name: "Create Request", href: "/dashboard/create-donation-request", icon: <PlusCircle className="w-5 h-5" /> },
   ];
 
   const links = role === "admin" ? adminLinks : role === "volunteer" ? volunteerLinks : donorLinks;

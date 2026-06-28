@@ -8,6 +8,8 @@ export default function AllUsersPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [filter, setFilter] = useState("all");
+
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -44,6 +46,11 @@ export default function AllUsersPage() {
     return <div className="flex justify-center p-10"><span className="loading loading-spinner text-[#e11d48]"></span></div>;
   }
 
+  const filteredUsers = users.filter(u => {
+    if (filter === "all") return true;
+    return u.status === filter;
+  });
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -51,6 +58,15 @@ export default function AllUsersPage() {
           <h1 className="text-3xl font-bold text-gray-800">All Users</h1>
           <p className="text-gray-500">Manage user roles and statuses.</p>
         </div>
+        <select 
+          className="select select-bordered" 
+          value={filter} 
+          onChange={(e) => setFilter(e.target.value)}
+        >
+          <option value="all">All Statuses</option>
+          <option value="active">Active</option>
+          <option value="blocked">Blocked</option>
+        </select>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -65,7 +81,7 @@ export default function AllUsersPage() {
               </tr>
             </thead>
             <tbody>
-              {users.map((u) => (
+              {filteredUsers.map((u) => (
                 <tr key={u._id} className="hover:bg-gray-50/50">
                   <td>
                     <div className="flex items-center gap-3">

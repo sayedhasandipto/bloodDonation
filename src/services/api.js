@@ -60,6 +60,18 @@ export const donationService = {
   updateRequestStatus: async (id, status, donorInfo = null) => {
     const res = await api.patch(`/donations/${id}/status`, { status, donorInfo });
     return res.data;
+  },
+  deleteRequest: async (id) => {
+    const res = await api.delete(`/donations/${id}`);
+    return res.data;
+  },
+  getRequestById: async (id) => {
+    const res = await api.get(`/donations/${id}`);
+    return res.data;
+  },
+  updateRequest: async (id, requestData) => {
+    const res = await api.patch(`/donations/${id}`, requestData);
+    return res.data;
   }
 };
 
@@ -76,18 +88,22 @@ export const userService = {
   updateUserStatus: async (id, status) => {
     const res = await api.patch(`/users/${id}/status`, { status });
     return res.data;
+  },
+  updateProfile: async (id, profileData) => {
+    const res = await api.patch(`/users/${id}`, profileData);
+    return res.data;
   }
 };
 
-// MOCK PAYMENT
-let mockPayments = [
-  { _id: '201', userId: '2', amount: 50, date: '2026-06-25' },
-  { _id: '202', userId: '3', amount: 100, date: '2026-06-26' }
-];
-
+// FUNDING SERVICE via EXPRESS
 export const paymentService = {
   getAllPayments: async () => {
-    return { data: mockPayments };
+    const res = await api.get('/funds');
+    return res.data;
+  },
+  createPayment: async (fundData) => {
+    const res = await api.post('/funds', fundData);
+    return res.data;
   }
 };
 

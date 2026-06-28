@@ -56,47 +56,49 @@ export default function PendingRequestsPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 }}
               >
-                <div className="card bg-base-100 shadow-sm hover:shadow-lg transition-shadow h-full border border-base-200">
-                  <div className="card-body">
-                    <div className="flex justify-between items-start mb-4">
-                      <div className="flex items-center gap-2">
-                        <div className="w-10 h-10 rounded-full bg-crimson-100 flex items-center justify-center">
-                          <Droplet className="w-5 h-5 text-crimson-600 fill-crimson-600" />
+                <div className="card bg-white shadow-[0_4px_20px_-4px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_-4px_rgba(0,0,0,0.1)] transition-all duration-300 h-full border border-gray-100 rounded-2xl overflow-hidden">
+                  <div className="card-body p-6">
+                    <div className="flex justify-between items-start mb-6">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-12 rounded-2xl bg-red-50 flex items-center justify-center">
+                          <Droplet className="w-6 h-6 text-[#e11d48] fill-[#e11d48]" />
                         </div>
                         <div>
-                          <span className="text-sm text-gray-500 block">Blood Group</span>
-                          <span className="text-xl font-bold text-crimson-700">{request.bloodGroup}</span>
+                          <span className="text-xs text-gray-500 uppercase tracking-wider font-semibold">Blood Group</span>
+                          <span className="text-2xl font-extrabold text-gray-900 block mt-0.5">{request.bloodGroup}</span>
                         </div>
                       </div>
-                      <span className="badge badge-warning">Pending</span>
+                      <span className="badge bg-amber-100 text-amber-700 border-none font-bold px-4 py-3 rounded-xl text-xs">Pending</span>
                     </div>
 
-                    <div className="space-y-3 mb-6">
+                    <div className="space-y-4 mb-8 bg-gray-50 p-5 rounded-2xl border border-gray-100">
                       <div className="flex items-center gap-3">
                         <User className="w-5 h-5 text-gray-400" />
-                        <span className="font-semibold">{request.recipientName}</span>
+                        <span className="font-bold text-gray-900 text-base">{request.recipientName}</span>
                       </div>
-                      <div className="flex items-center gap-3 text-gray-600">
-                        <MapPin className="w-5 h-5 text-gray-400" />
-                        <span className="text-sm">{request.recipientUpazila}, {request.recipientDistrict}</span>
+                      <div className="flex items-start gap-3">
+                        <MapPin className="w-5 h-5 text-gray-400 mt-0.5" />
+                        <span className="text-sm text-gray-700 leading-snug">{request.recipientUpazila}, {request.recipientDistrict}</span>
                       </div>
-                      <div className="flex items-center gap-3 text-gray-600">
+                      <div className="flex items-center gap-3">
                         <Calendar className="w-5 h-5 text-gray-400" />
-                        <span className="text-sm">{new Date(request.donationDate).toLocaleDateString()}</span>
+                        <span className="text-sm text-gray-700 font-medium">{new Date(request.donationDate).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</span>
                       </div>
-                      <div className="flex items-center gap-3 text-gray-600">
+                      <div className="flex items-center gap-3">
                         <Clock className="w-5 h-5 text-gray-400" />
-                        <span className="text-sm">{request.donationTime}</span>
+                        <span className="text-sm text-gray-700 font-medium">{request.donationTime}</span>
                       </div>
                     </div>
 
-                    <Link 
-                      href={`/donation-requests/${request._id}`}
-                      className="btn btn-outline btn-error w-full group"
-                    >
-                      View Details 
-                      <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-                    </Link>
+                    <div className="mt-auto">
+                      <Link 
+                        href={`/donation-requests/${request._id}`}
+                        className="btn bg-[#e11d48] hover:bg-[#be123c] text-white border-none w-full h-12 rounded-xl text-base shadow-md shadow-red-200 group"
+                      >
+                        View Details 
+                        <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </motion.div>

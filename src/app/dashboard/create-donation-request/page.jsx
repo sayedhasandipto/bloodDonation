@@ -67,7 +67,7 @@ export default function CreateRequestPage() {
       };
 
       await donationService.createRequest(requestData);
-      router.push("/dashboard/my-requests");
+      router.push("/dashboard/my-donation-requests");
     } catch (err) {
       setError(err.message || "Failed to create donation request");
       setLoading(false);
