@@ -13,7 +13,7 @@ export default function DashboardHome() {
     <div className="p-6 md:p-10">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-800">
-          Welcome back, {user.name}!
+          Welcome back, <span className="text-[#e11d48]">{user.name}</span>!
         </h1>
         <p className="text-gray-500">Here's what's happening with your account today.</p>
       </div>

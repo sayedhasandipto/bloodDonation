@@ -211,7 +211,7 @@ export default function ProfilePage() {
                   <label className="label"><span className="label-text font-medium text-gray-700">Full Name</span></label>
                   <input 
                     type="text" 
-                    className="input input-bordered w-full bg-white" 
+                    className="input input-bordered w-full bg-white text-gray-800" 
                     value={formData.name}
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                     required
