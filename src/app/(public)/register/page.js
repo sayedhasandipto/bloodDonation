@@ -54,7 +54,7 @@ export default function RegisterPage() {
   const uploadToImageBB = async (file) => {
     const imgData = new FormData();
     imgData.append("image", file);
-    const apiKey = process.env.IMGBB_API_KEY;
+    const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY;
     const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
       method: "POST",
       body: imgData,
