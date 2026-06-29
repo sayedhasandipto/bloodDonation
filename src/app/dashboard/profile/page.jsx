@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { userService } from "@/services/api";
 import { getDistricts, getUpazilas } from "@/services/locations";
-import { User, MapPin, Mail, Droplet, Camera } from "lucide-react";
+import { User, MapPin, Mail, Droplet, Camera, CheckCircle, Lock } from "lucide-react";
 
 const BLOOD_GROUPS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
 
@@ -111,174 +111,219 @@ export default function ProfilePage() {
   if (!user) return null;
 
   return (
-    <div className="p-6 md:p-10 max-w-4xl mx-auto">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-800">My Profile</h1>
-        <p className="text-gray-500">Manage your account information and preferences.</p>
-      </div>
-
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        {/* Header Cover */}
-        <div 
-          className="h-48 bg-cover bg-center relative"
-          style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=2070&auto=format&fit=crop")' }}
-        >
-          <div className="absolute inset-0 bg-gradient-to-r from-[#e11d48]/80 to-[#9f1239]/90"></div>
-        </div>
+    <div className="p-4 md:p-8 max-w-5xl mx-auto">
+      <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden mb-8">
         
-        <div className="px-8 pb-8">
-          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end -mt-16 mb-8 gap-4">
-            <div className="flex items-end gap-6">
-              <div className="relative">
-                <div className="w-32 h-32 rounded-full border-4 border-white bg-white shadow-lg overflow-hidden flex-shrink-0">
-                  <img 
-                    src={user.avatar || "https://i.ibb.co/CpDtbhR/default-avatar.png"} 
-                    alt={user.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                {isEditing && (
-                  <label className="absolute bottom-2 right-2 w-8 h-8 bg-[#e11d48] rounded-full text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-[#be123c] transition-colors">
-                    <Camera className="w-4 h-4" />
-                    <input type="file" className="hidden" accept="image/*" onChange={(e) => setAvatarFile(e.target.files[0])} />
-                  </label>
-                )}
-              </div>
-              <div className="mb-2">
-                <h2 className="text-2xl font-bold text-gray-800">{user.name}</h2>
-                <div className="flex items-center gap-2 text-gray-500 mt-1">
-                  <span className={`badge badge-sm text-white capitalize ${user.role === 'admin' ? 'badge-error' : user.role === 'volunteer' ? 'badge-warning' : 'badge-success'}`}>
-                    {user.role}
-                  </span>
-                  <span className={`badge badge-sm badge-outline capitalize ${user.status === 'active' ? 'text-green-600 border-green-600' : 'text-red-600 border-red-600'}`}>
-                    {user.status}
-                  </span>
-                </div>
-              </div>
-            </div>
-            
-            <button 
-              onClick={() => setIsEditing(!isEditing)}
-              className={`btn ${isEditing ? 'btn-ghost' : 'bg-[#e11d48] hover:bg-[#be123c] text-white border-none'}`}
-            >
-              {isEditing ? "Cancel" : "Edit Profile"}
-            </button>
+        <div className="relative">
+          {/* Header Cover */}
+          <div 
+            className="h-[200px] bg-[#3a0a14] w-full pt-[130px] px-8 md:px-12 flex justify-between relative"
+            style={{ backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px)', backgroundSize: '16px 16px' }}
+          >
+             <div className="ml-[140px] sm:ml-[160px] flex items-center gap-4 z-10 relative">
+                <h1 className="text-3xl md:text-4xl font-black text-white">{user.name}</h1>
+                <span className="hidden sm:flex items-center gap-1 bg-white text-[#2e7d32] px-3 py-1 rounded-full text-[10px] font-black shadow-sm tracking-wide">
+                  <CheckCircle className="w-3.5 h-3.5" /> ACTIVE DONOR
+                </span>
+             </div>
           </div>
 
-          {error && <div className="alert alert-error mb-6">{error}</div>}
-          {success && <div className="alert alert-success mb-6 text-white">{success}</div>}
-
-          {!isEditing ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Contact Information</h3>
-                  <div className="space-y-4 bg-gray-50 p-5 rounded-xl border border-gray-100">
-                    <div className="flex items-center gap-3">
-                      <Mail className="w-5 h-5 text-gray-400" />
-                      <div>
-                        <p className="text-xs text-gray-500">Email Address</p>
-                        <p className="font-medium text-gray-800">{user.email}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-400 uppercase tracking-wider mb-3">Medical & Location</h3>
-                  <div className="space-y-4 bg-gray-50 p-5 rounded-xl border border-gray-100">
-                    <div className="flex items-center gap-3">
-                      <Droplet className="w-5 h-5 text-[#e11d48]" />
-                      <div>
-                        <p className="text-xs text-gray-500">Blood Group</p>
-                        <p className="font-bold text-[#e11d48] text-lg">{user.bloodGroup || "Not specified"}</p>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-3">
-                      <MapPin className="w-5 h-5 text-gray-400" />
-                      <div>
-                        <p className="text-xs text-gray-500">Location</p>
-                        <p className="font-medium text-gray-800">{user.upazila}, {user.district}</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+          <div className="px-6 md:px-12 pb-12 relative">
+            {/* Avatar */}
+            <div className="absolute -top-[70px] left-6 md:left-12 z-20">
+              <div className="w-[120px] h-[120px] sm:w-[140px] sm:h-[140px] rounded-full border-[6px] border-white bg-white shadow-md overflow-hidden relative">
+                <img 
+                  src={user.avatar || "https://i.ibb.co/CpDtbhR/default-avatar.png"} 
+                  alt={user.name}
+                  className="w-full h-full object-cover"
+                />
+                {isEditing && (
+                   <label className="absolute bottom-2 right-2 w-8 h-8 bg-[#e11d48] rounded-full text-white flex items-center justify-center cursor-pointer shadow-md hover:bg-[#be123c] transition-colors">
+                     <Camera className="w-4 h-4" />
+                     <input type="file" className="hidden" accept="image/*" onChange={(e) => setAvatarFile(e.target.files[0])} />
+                   </label>
+                )}
               </div>
             </div>
-          ) : (
-            <form onSubmit={handleSave} className="bg-gray-50 p-6 rounded-xl border border-gray-100">
-              <h3 className="text-lg font-bold text-gray-800 mb-6 border-b border-gray-200 pb-2">Edit Information</h3>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="form-control">
-                  <label className="label"><span className="label-text font-medium text-gray-700">Full Name</span></label>
-                  <input 
-                    type="text" 
-                    className="input input-bordered w-full bg-white text-gray-800" 
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    required
-                  />
-                </div>
-                
-                <div className="form-control">
-                  <label className="label"><span className="label-text font-medium text-gray-700">Blood Group</span></label>
-                  <select 
-                    className="select select-bordered w-full bg-white text-gray-800" 
-                    value={formData.bloodGroup}
-                    onChange={(e) => setFormData({...formData, bloodGroup: e.target.value})}
-                    required
-                  >
-                    <option value="" disabled>Select Blood Group</option>
-                    {BLOOD_GROUPS.map((bg) => (
-                      <option key={bg} value={bg}>{bg}</option>
-                    ))}
-                  </select>
-                </div>
-                
-                <div className="form-control">
-                  <label className="label"><span className="label-text font-medium text-gray-700">District</span></label>
-                  <select 
-                    className="select select-bordered w-full bg-white text-gray-800" 
-                    value={formData.district}
-                    onChange={handleDistrictChange}
-                    required
-                  >
-                    <option value="" disabled>Select District</option>
-                    {districts.map((d) => (
-                      <option key={d.name} value={d.name}>{d.name}</option>
-                    ))}
-                  </select>
+
+            {/* Blood Group Badge (Top Right) */}
+            <div className="absolute -top-[60px] right-6 md:right-12 bg-white/70 backdrop-blur-md border border-white/50 rounded-2xl px-6 py-4 text-center shadow-[0_8px_30px_rgb(0,0,0,0.04)] min-w-[120px] hidden md:block z-20">
+              <p className="text-[10px] font-black text-[#e11d48] tracking-[0.15em] mb-1">BLOOD GROUP</p>
+              <p className="text-4xl font-black text-[#e11d48]">{user.bloodGroup || "N/A"}</p>
+            </div>
+
+            {/* Location & Edit Button */}
+            <div className="pl-[130px] sm:pl-[160px] pt-3 flex flex-col sm:flex-row sm:items-center justify-between mb-12 md:mb-16 gap-4">
+              <div className="flex items-center text-gray-500 text-sm font-medium">
+                <MapPin className="w-4 h-4 mr-1 text-[#e11d48]" />
+                {user.upazila || "Location"}, {user.district || "Not Set"}
+              </div>
+              <button 
+                onClick={() => setIsEditing(!isEditing)}
+                className={`btn btn-sm px-6 rounded-xl ${isEditing ? 'btn-ghost' : 'bg-[#e11d48] hover:bg-[#be123c] text-white border-none'}`}
+              >
+                {isEditing ? "Cancel" : "Edit Profile"}
+              </button>
+            </div>
+
+            {error && <div className="alert alert-error mb-8 rounded-xl">{error}</div>}
+            {success && <div className="alert alert-success mb-8 text-white rounded-xl">{success}</div>}
+
+            {!isEditing ? (
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
+                {/* Left Column */}
+                <div className="lg:col-span-2 space-y-12">
+                  {/* Personal Information */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-8 h-8 rounded-lg bg-[#fff1f2] text-[#e11d48] flex items-center justify-center">
+                        <User className="w-4 h-4" />
+                      </div>
+                      <h2 className="text-xl font-bold text-gray-900">Personal Information</h2>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-2 ml-1">Full Name</label>
+                        <div className="bg-gray-50/80 px-5 py-4 rounded-2xl text-gray-800 font-bold text-sm border border-gray-100">
+                          {user.name}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-2 ml-1">Email (Fixed)</label>
+                        <div className="bg-gray-50/80 px-5 py-4 rounded-2xl text-gray-500 font-bold text-sm border border-gray-100 flex justify-between items-center">
+                          <span className="truncate">{user.email}</span>
+                          <Lock className="w-4 h-4 text-gray-400 shrink-0 ml-2" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Address Details */}
+                  <div>
+                    <div className="flex items-center gap-3 mb-6">
+                      <div className="w-8 h-8 rounded-lg bg-[#fff1f2] text-[#e11d48] flex items-center justify-center">
+                        <MapPin className="w-4 h-4" />
+                      </div>
+                      <h2 className="text-xl font-bold text-gray-900">Address Details</h2>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-2 ml-1">District</label>
+                        <div className="bg-gray-50/80 px-5 py-4 rounded-2xl text-gray-800 font-bold text-sm border border-gray-100">
+                          {user.district || "-"}
+                        </div>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-2 ml-1">Upazila</label>
+                        <div className="bg-gray-50/80 px-5 py-4 rounded-2xl text-gray-800 font-bold text-sm border border-gray-100">
+                          {user.upazila || "-"}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="form-control">
-                  <label className="label"><span className="label-text font-medium text-gray-700">Upazila</span></label>
-                  <select 
-                    className="select select-bordered w-full bg-white text-gray-800" 
-                    value={formData.upazila}
-                    onChange={(e) => setFormData({...formData, upazila: e.target.value})}
-                    required
-                    disabled={!formData.district}
-                  >
-                    <option value="" disabled>Select Upazila</option>
-                    {upazilas.map((u) => (
-                      <option key={u.name} value={u.name}>{u.name}</option>
-                    ))}
-                  </select>
+                {/* Right Column */}
+                <div>
+                  <div className="bg-white rounded-[2rem] p-8 shadow-[0_4px_24px_rgba(0,0,0,0.02)] border border-gray-100 h-full">
+                    <div className="flex flex-col gap-2 mb-8">
+                      <div className="w-12 h-12 rounded-full bg-white shadow-sm text-[#e11d48] flex items-center justify-center border border-gray-100">
+                        <Droplet className="w-5 h-5" />
+                      </div>
+                      <h2 className="text-lg font-bold text-gray-900 mt-2">Medical Profile</h2>
+                    </div>
+                    
+                    <div className="mb-10">
+                      <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-2">Blood Group</label>
+                      <div className="text-[#e11d48] font-black text-2xl">
+                        {user.bloodGroup || "N/A"}
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-[1.5rem] p-6 shadow-[0_4px_20px_rgba(0,0,0,0.04)] border border-gray-50">
+                      <h3 className="font-bold text-gray-900 mb-3 text-sm leading-tight">Eligible to<br/>Donate</h3>
+                      <p className="text-[11px] text-gray-500 leading-relaxed font-medium">
+                        Your account is in good standing. You are ready to save lives.
+                      </p>
+                    </div>
+                  </div>
                 </div>
               </div>
+            ) : (
+              <form onSubmit={handleSave} className="bg-gray-50/50 p-6 md:p-8 rounded-[2rem] border border-gray-100 mt-4">
+                <h3 className="text-xl font-bold text-gray-900 mb-8 border-b border-gray-200 pb-4">Edit Profile Information</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="form-control">
+                    <label className="label"><span className="label-text text-xs font-bold text-gray-400 uppercase tracking-wider">Full Name</span></label>
+                    <input 
+                      type="text" 
+                      className="input input-bordered w-full bg-white text-gray-800 rounded-xl" 
+                      value={formData.name}
+                      onChange={(e) => setFormData({...formData, name: e.target.value})}
+                      required
+                    />
+                  </div>
+                  
+                  <div className="form-control">
+                    <label className="label"><span className="label-text text-xs font-bold text-gray-400 uppercase tracking-wider">Blood Group</span></label>
+                    <select 
+                      className="select select-bordered w-full bg-white text-gray-800 rounded-xl" 
+                      value={formData.bloodGroup}
+                      onChange={(e) => setFormData({...formData, bloodGroup: e.target.value})}
+                      required
+                    >
+                      <option value="" disabled>Select Blood Group</option>
+                      {BLOOD_GROUPS.map((bg) => (
+                        <option key={bg} value={bg}>{bg}</option>
+                      ))}
+                    </select>
+                  </div>
+                  
+                  <div className="form-control">
+                    <label className="label"><span className="label-text text-xs font-bold text-gray-400 uppercase tracking-wider">District</span></label>
+                    <select 
+                      className="select select-bordered w-full bg-white text-gray-800 rounded-xl" 
+                      value={formData.district}
+                      onChange={handleDistrictChange}
+                      required
+                    >
+                      <option value="" disabled>Select District</option>
+                      {districts.map((d) => (
+                        <option key={d.name} value={d.name}>{d.name}</option>
+                      ))}
+                    </select>
+                  </div>
 
-              <div className="mt-8 flex justify-end gap-3">
-                <button type="button" className="btn btn-ghost" onClick={() => setIsEditing(false)}>Cancel</button>
-                <button type="submit" className="btn bg-[#e11d48] hover:bg-[#be123c] text-white border-none px-8" disabled={loading}>
-                  {loading ? <span className="loading loading-spinner"></span> : "Save Changes"}
-                </button>
-              </div>
-            </form>
-          )}
+                  <div className="form-control">
+                    <label className="label"><span className="label-text text-xs font-bold text-gray-400 uppercase tracking-wider">Upazila</span></label>
+                    <select 
+                      className="select select-bordered w-full bg-white text-gray-800 rounded-xl" 
+                      value={formData.upazila}
+                      onChange={(e) => setFormData({...formData, upazila: e.target.value})}
+                      required
+                      disabled={!formData.district}
+                    >
+                      <option value="" disabled>Select Upazila</option>
+                      {upazilas.map((u) => (
+                        <option key={u.name} value={u.name}>{u.name}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
 
+                <div className="mt-10 flex justify-end gap-4">
+                  <button type="button" className="btn btn-ghost rounded-xl" onClick={() => setIsEditing(false)}>Cancel</button>
+                  <button type="submit" className="btn bg-[#e11d48] hover:bg-[#be123c] text-white border-none px-8 rounded-xl shadow-sm" disabled={loading}>
+                    {loading ? <span className="loading loading-spinner"></span> : "Save Changes"}
+                  </button>
+                </div>
+              </form>
+            )}
+
+          </div>
         </div>
       </div>
     </div>
