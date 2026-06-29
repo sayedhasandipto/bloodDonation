@@ -60,21 +60,26 @@ export default function FundingPage() {
     setLoading(true);
     
     try {
-      const newFund = {
-        name: user.name || "Anonymous",
-        email: user.email,
-        amount: Number(amount),
-        type: "One-time"
-      };
+      const response = await fetch('/api/checkout_sessions', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: Number(amount),
+          name: user.name || "Anonymous",
+          email: user.email,
+        }),
+      });
+
+      const data = await response.json();
       
-      // Post to MongoDB dynamically
-      await paymentService.createPayment(newFund);
-      
-      // Refresh the data
-      await fetchFunds();
-      
-      setAmount("");
-      alert("Thank you for your generous donation!");
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        console.error("Stripe error:", data.error);
+        alert("Failed to initialize payment gateway");
+      }
     } catch (error) {
       alert("Failed to process donation");
       console.error(error);
