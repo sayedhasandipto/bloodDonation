@@ -20,16 +20,36 @@ export default function SearchPage() {
   });
   
   const [results, setResults] = useState([]);
-  const [hasSearched, setHasSearched] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [allDonors, setAllDonors] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadLocations = async () => {
-      const dists = await getDistricts();
-      setDistricts(dists);
+    const loadInitialData = async () => {
+      try {
+        const dists = await getDistricts();
+        setDistricts(dists);
+        
+        const { data } = await userService.getPublicDonors();
+        setAllDonors(data || []);
+      } catch (error) {
+        console.error("Failed to load initial data:", error);
+      } finally {
+        setLoading(false);
+      }
     };
-    loadLocations();
+    loadInitialData();
   }, []);
+
+  useEffect(() => {
+    const filteredDonors = allDonors.filter(donor => {
+      let match = true;
+      if (formData.bloodGroup && donor.bloodGroup !== formData.bloodGroup) match = false;
+      if (formData.district && donor.district !== formData.district) match = false;
+      if (formData.upazila && donor.upazila !== formData.upazila) match = false;
+      return match;
+    });
+    setResults(filteredDonors);
+  }, [formData, allDonors]);
 
   const handleDistrictChange = async (e) => {
     const districtValue = e.target.value;
@@ -42,28 +62,7 @@ export default function SearchPage() {
     }
   };
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setHasSearched(true);
-    
-    try {
-      const { data } = await userService.getPublicDonors();
-      const filteredDonors = data.filter(donor => {
-        let match = true;
-        if (formData.bloodGroup && donor.bloodGroup !== formData.bloodGroup) match = false;
-        if (formData.district && donor.district !== formData.district) match = false;
-        if (formData.upazila && donor.upazila !== formData.upazila) match = false;
-        return match;
-      });
-      setResults(filteredDonors);
-    } catch (error) {
-      console.error("Search failed:", error);
-      alert(`Search failed: ${error.response?.data?.error || error.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
+
 
   const downloadPDF = () => {
     const input = document.getElementById("search-results-table");
@@ -94,7 +93,7 @@ export default function SearchPage() {
         {/* Search Form */}
         <div className="card bg-base-100 shadow-md mb-12">
           <div className="card-body">
-            <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
               
               <div className="form-control">
                 <label className="label"><span className="label-text text-gray-700 font-medium">Blood Group</span></label>
@@ -125,16 +124,12 @@ export default function SearchPage() {
                   ))}
                 </select>
               </div>
-              
-              <button type="submit" className={`btn bg-crimson-600 hover:bg-crimson-700 text-white border-none h-12`} disabled={loading}>
-                {loading ? <span className="loading loading-spinner"></span> : <><Search className="w-5 h-5 mr-2" /> Search</>}
-              </button>
-            </form>
+            </div>
           </div>
         </div>
 
         {/* Search Results */}
-        {hasSearched && (
+        {!loading && (
           <div className="card bg-base-100 shadow-sm">
             <div className="card-body">
               <div className="flex justify-between items-center mb-4">

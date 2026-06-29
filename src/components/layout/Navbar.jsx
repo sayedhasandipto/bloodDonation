@@ -59,11 +59,18 @@ export default function Navbar() {
             </Link>
           </li>
           {user && (
-            <li>
-              <Link href="/funding" className="text-gray-700 font-medium hover:text-[#e11d48]">
-                Funding
-              </Link>
-            </li>
+            <>
+              <li>
+                <Link href="/dashboard" className="text-gray-700 font-medium hover:text-[#e11d48]">
+                  Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link href="/funding" className="text-gray-700 font-medium hover:text-[#e11d48]">
+                  Funding
+                </Link>
+              </li>
+            </>
           )}
         </ul>
       </div>
@@ -80,24 +87,32 @@ export default function Navbar() {
             </Link>
           </div>
         ) : (
-          <div className="dropdown dropdown-end">
-            <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-              <div className="w-10 rounded-full ring-2 ring-[#e11d48] ring-offset-2">
-                <img
-                  alt={user.name || "User avatar"}
-                  src={user.avatar || "https://i.ibb.co/CpDtbhR/default-avatar.png"}
-                />
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={logout} 
+              className="hidden lg:inline-flex btn btn-outline btn-error btn-sm font-medium"
+            >
+              Log Out
+            </button>
+            <div className="dropdown dropdown-end">
+              <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
+                <div className="w-10 rounded-full ring-2 ring-[#e11d48] ring-offset-2">
+                  <img
+                    alt={user.name || "User avatar"}
+                    src={user.avatar || "https://i.ibb.co/CpDtbhR/default-avatar.png"}
+                  />
+                </div>
               </div>
+              <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52 text-gray-800">
+                <li className="px-4 py-2 pointer-events-none">
+                  <span className="text-xs text-gray-500 p-0">Signed in as</span>
+                  <span className="text-sm font-bold text-gray-800 p-0 truncate">{user.email}</span>
+                </li>
+                <div className="divider my-0"></div>
+                <li><Link href="/dashboard">Dashboard</Link></li>
+                <li><button onClick={logout} className="text-red-500 hover:text-red-600">Log Out</button></li>
+              </ul>
             </div>
-            <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-white rounded-box w-52 text-gray-800">
-              <li className="px-4 py-2 pointer-events-none">
-                <span className="text-xs text-gray-500 p-0">Signed in as</span>
-                <span className="text-sm font-bold text-gray-800 p-0 truncate">{user.email}</span>
-              </li>
-              <div className="divider my-0"></div>
-              <li><Link href="/dashboard">Dashboard</Link></li>
-              <li><button onClick={logout} className="text-red-500 hover:text-red-600">Log Out</button></li>
-            </ul>
           </div>
         )}
       </div>
