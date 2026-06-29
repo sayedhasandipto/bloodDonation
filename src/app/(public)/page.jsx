@@ -2,13 +2,37 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Heart, Search, Users, Activity, Phone, Mail, MapPin, Calendar, Clock, ArrowRight, Droplet } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Heart, Search, Users, Activity, Phone, Mail, MapPin, Calendar, Clock, ArrowRight, Droplet, Eye, DollarSign, ChevronDown } from "lucide-react";
 import { donationService } from "@/services/api";
+
+const faqs = [
+  {
+    question: "Who can donate blood?",
+    answer: "Most people can donate blood if they are in good health, weigh at least 50kg, and are aged between 18 and 65."
+  },
+  {
+    question: "How often can I donate blood?",
+    answer: "Men can safely give blood every 12 weeks, and women can give blood every 16 weeks."
+  },
+  {
+    question: "Is the blood donation process safe?",
+    answer: "Yes, it is entirely safe. A new, sterile needle is used for each donation and is immediately discarded afterwards. You cannot get any disease from donating blood."
+  },
+  {
+    question: "How long does a blood donation take?",
+    answer: "The actual blood donation typically takes about 8-10 minutes. The entire process, including registration, mini-physical, and refreshments, takes about 45-60 minutes."
+  },
+  {
+    question: "What should I do before donating blood?",
+    answer: "Drink plenty of water, eat a healthy meal avoiding fatty foods, and make sure you get a good night's sleep before your donation."
+  }
+];
 
 export default function HomePage() {
   const [featuredRequests, setFeaturedRequests] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [openFaqIndex, setOpenFaqIndex] = useState(null);
 
   useEffect(() => {
     const fetchFeatured = async () => {
@@ -27,47 +51,88 @@ export default function HomePage() {
   return (
     <div className="w-full">
       {/* Hero Banner */}
-      <section className="relative bg-gradient-to-br from-[#881337] to-[#e11d48] text-white py-28 md:py-36 overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+      <section className="relative w-full min-h-[500px] flex items-center justify-center text-white pt-28 pb-32 md:pt-36 md:pb-44">
+        {/* Background Image with Overlay */}
+        <div 
+          className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1615461066841-6116e6e02428?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')" }}
+        >
+          <div className="absolute inset-0 bg-gray-900/75"></div>
+        </div>
+
         <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-6 tracking-tight text-white">
-              Give Blood, <span className="text-[#fda4af]">Save Life</span>
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-4 tracking-tight text-white leading-tight">
+              Saving Lives, <br className="hidden sm:block" />
+              <span className="text-[#f43f5e]">One Drop</span> at a Time
             </h1>
-            <p className="text-lg md:text-2xl mb-10 text-[#fecdd3] max-w-2xl mx-auto">
-              Your donation can bring hope and life to those in critical need. Join our community today.
+            <p className="text-base sm:text-lg md:text-xl mb-10 text-gray-200 max-w-2xl mx-auto font-medium">
+              Connect directly with 19 pending requests or join our community of donors to help save more lives.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/register" className="btn btn-lg bg-white text-[#be123c] font-bold px-8 rounded-full shadow-xl hover:shadow-2xl hover:scale-105 transition-all border-none">
-                <Heart className="mr-2 w-5 h-5" /> Join as a donor
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <Link href="/register" className="flex items-center justify-center gap-2 bg-[#f43f5e] hover:bg-[#e11d48] text-white font-bold py-3 px-8 rounded-xl transition-all">
+                Become a Donor <ArrowRight className="w-5 h-5" />
               </Link>
-              <Link href="/search" className="btn btn-lg bg-transparent border-2 border-white text-white font-bold px-8 rounded-full shadow-xl hover:bg-white/20 transition-all">
-                <Search className="mr-2 w-5 h-5" /> Search Donors
+              <Link href="/search" className="flex items-center justify-center gap-2 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white/20 text-white font-bold py-3 px-8 rounded-xl transition-all">
+                Search Donors <Eye className="w-5 h-5" />
               </Link>
             </div>
           </motion.div>
         </div>
-        
-        {/* Decorative elements */}
-        <motion.div 
-          animate={{ y: [0, -20, 0] }} 
-          transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
-          className="absolute top-1/4 left-10 hidden lg:block opacity-20"
-        >
-          <Heart className="w-24 h-24 text-white" />
-        </motion.div>
-        <motion.div 
-          animate={{ y: [0, 20, 0] }} 
-          transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-          className="absolute bottom-1/4 right-10 hidden lg:block opacity-20"
-        >
-          <Activity className="w-32 h-32 text-white" />
-        </motion.div>
       </section>
+
+      {/* Stats Cards */}
+      <div className="relative z-20 px-4 -mt-20 md:-mt-24 pb-12">
+        <div className="container mx-auto max-w-5xl">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Card 1 */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="bg-white rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center text-center border border-gray-50"
+            >
+              <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
+                <Users className="w-5 h-5 text-[#f43f5e]" />
+              </div>
+              <h3 className="text-4xl font-extrabold text-gray-900 mb-1">15+</h3>
+              <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">Active Donors</p>
+            </motion.div>
+            
+            {/* Card 2 */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="bg-white rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center text-center border border-gray-50"
+            >
+              <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
+                <DollarSign className="w-5 h-5 text-[#f43f5e]" />
+              </div>
+              <h3 className="text-4xl font-extrabold text-gray-900 mb-1">$12,886</h3>
+              <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">Total Funding</p>
+            </motion.div>
+
+            {/* Card 3 */}
+            <motion.div 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+              className="bg-white rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center text-center border border-gray-50"
+            >
+              <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
+                <Droplet className="w-5 h-5 text-[#f43f5e]" />
+              </div>
+              <h3 className="text-4xl font-extrabold text-gray-900 mb-1">19</h3>
+              <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">Total Requests</p>
+            </motion.div>
+          </div>
+        </div>
+      </div>
 
       {/* Featured Section - Recent Requests */}
       <section className="py-20 bg-gray-50">
@@ -173,6 +238,50 @@ export default function HomePage() {
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">{item.title}</h3>
                 <p className="text-gray-600 leading-relaxed">{item.desc}</p>
               </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-20 md:py-28 bg-white">
+        <div className="container mx-auto px-4 max-w-3xl">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
+            <div className="w-24 h-1 bg-[#e11d48] mx-auto rounded-full"></div>
+            <p className="text-gray-600 mt-6 text-lg">Find answers to common questions about blood donation. If you have any other questions, feel free to contact us.</p>
+          </div>
+
+          <div className="space-y-4">
+            {faqs.map((faq, index) => (
+              <div 
+                key={index} 
+                className={`border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 ${openFaqIndex === index ? 'shadow-md border-[#e11d48]/30' : 'hover:border-gray-300 hover:shadow-sm'}`}
+              >
+                <button
+                  className="w-full flex items-center justify-between p-6 text-left focus:outline-none bg-white"
+                  onClick={() => setOpenFaqIndex(openFaqIndex === index ? null : index)}
+                >
+                  <span className="font-semibold text-lg text-gray-900">{faq.question}</span>
+                  <div className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center transition-colors ${openFaqIndex === index ? 'bg-[#fff1f2] text-[#e11d48]' : 'bg-gray-50 text-gray-400'}`}>
+                    <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${openFaqIndex === index ? 'rotate-180' : ''}`} />
+                  </div>
+                </button>
+                <AnimatePresence>
+                  {openFaqIndex === index && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3, ease: "easeInOut" }}
+                    >
+                      <div className="px-6 pb-6 text-gray-600 leading-relaxed border-t border-gray-100 pt-4 mt-2">
+                        {faq.answer}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             ))}
           </div>
         </div>
