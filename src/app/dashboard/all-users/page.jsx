@@ -1,144 +1,300 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
 import { userService } from "@/services/api";
-import { Users, MoreVertical, Shield, User as UserIcon, Activity, Ban } from "lucide-react";
+import { Users, Search, Shield, UserCheck, UserX, ChevronLeft, ChevronRight } from "lucide-react";
+
+const ROLES = ["admin", "volunteer", "donor"];
+const STATUSES = ["active", "blocked"];
 
 export default function AllUsersPage() {
+  const { user } = useAuth();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [roleFilter, setRoleFilter] = useState("all");
 
-  const [filter, setFilter] = useState("all");
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const res = await userService.getAllUsers();
+      setUsers(res.data || []);
+    } catch (error) {
+      console.error("Failed to fetch users:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchUsers = async () => {
-      try {
-        const res = await userService.getAllUsers();
-        setUsers(res.data || []);
-      } catch (error) {
-        console.error("Failed to fetch users", error);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchUsers();
   }, []);
 
-  const handleRoleChange = async (id, newRole) => {
+  const handleRoleChange = async (userId, newRole) => {
     try {
-      await userService.updateUserRole(id, newRole);
-      setUsers(users.map(u => u._id === id ? { ...u, role: newRole } : u));
+      await userService.updateUserRole(userId, newRole);
+      setUsers(users.map(u => u._id === userId ? { ...u, role: newRole } : u));
     } catch (error) {
-      console.error("Failed to update role", error);
+      alert("Failed to update user role.");
+      console.error(error);
     }
   };
 
-  const handleStatusChange = async (id, newStatus) => {
+  const handleStatusChange = async (userId, newStatus) => {
     try {
-      await userService.updateUserStatus(id, newStatus);
-      setUsers(users.map(u => u._id === id ? { ...u, status: newStatus } : u));
+      await userService.updateUserStatus(userId, newStatus);
+      setUsers(users.map(u => u._id === userId ? { ...u, status: newStatus } : u));
     } catch (error) {
-      console.error("Failed to update status", error);
+      alert("Failed to update user status.");
+      console.error(error);
     }
   };
-
-  if (loading) {
-    return <div className="flex justify-center p-10"><span className="loading loading-spinner text-[#e11d48]"></span></div>;
-  }
 
   const filteredUsers = users.filter(u => {
-    if (filter === "all") return true;
-    return u.status === filter;
+    const matchesSearch =
+      !searchQuery ||
+      u.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      u.email?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesRole = roleFilter === "all" || u.role === roleFilter;
+    return matchesSearch && matchesRole;
   });
+
+  // Pagination logic
+  const totalPages = Math.ceil(filteredUsers.length / itemsPerPage);
+  const currentItems = filteredUsers.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const getRoleBadgeClass = (role) => {
+    switch (role) {
+      case "admin": return "badge-error text-white";
+      case "volunteer": return "badge-warning text-white";
+      default: return "badge-success text-white";
+    }
+  };
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-800">All Users</h1>
-          <p className="text-gray-500">Manage user roles and statuses.</p>
+          <h1 className="text-3xl font-bold text-gray-800 flex items-center gap-3">
+            <Users className="w-8 h-8 text-[#e11d48]" />
+            All Users
+          </h1>
+          <p className="text-gray-500 mt-1">
+            Manage user roles and account statuses. Total: <span className="font-bold text-gray-700">{users.length}</span> users
+          </p>
         </div>
-        <select 
-          className="select select-bordered" 
-          value={filter} 
-          onChange={(e) => setFilter(e.target.value)}
-        >
-          <option value="all">All Statuses</option>
-          <option value="active">Active</option>
-          <option value="blocked">Blocked</option>
-        </select>
       </div>
 
+      {/* Filters */}
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="relative flex-1">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search by name or email..."
+              className="input input-bordered w-full pl-10 bg-white text-gray-900 focus:border-[#e11d48]"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
+          </div>
+          <select
+            className="select select-bordered w-full sm:w-48 bg-white text-gray-800"
+            value={roleFilter}
+            onChange={(e) => {
+              setRoleFilter(e.target.value);
+              setCurrentPage(1);
+            }}
+          >
+            <option value="all">All Roles</option>
+            {ROLES.map(r => (
+              <option key={r} value={r} className="capitalize">{r.charAt(0).toUpperCase() + r.slice(1)}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+
+      {/* Table */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="table w-full">
-            <thead className="bg-gray-50">
-              <tr>
-                <th>User</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredUsers.map((u) => (
-                <tr key={u._id} className="hover:bg-gray-50/50">
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <div className="avatar">
-                        <div className="mask mask-squircle w-12 h-12">
-                          <img src={u.avatar || "https://i.ibb.co/CpDtbhR/default-avatar.png"} alt={u.name} />
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <span className="loading loading-spinner loading-lg text-[#e11d48]"></span>
+          </div>
+        ) : currentItems.length === 0 ? (
+          <div className="text-center py-16">
+            <Users className="w-14 h-14 text-gray-300 mx-auto mb-4" />
+            <h3 className="text-lg font-bold text-gray-600">No Users Found</h3>
+            <p className="text-gray-400 mt-1">Try adjusting your search or filter criteria.</p>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="table w-full">
+              <thead className="bg-gray-50">
+                <tr className="text-gray-500 text-sm">
+                  <th>#</th>
+                  <th>User</th>
+                  <th>Blood Group</th>
+                  <th>Location</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {currentItems.map((u, idx) => (
+                  <tr key={u._id} className="hover:bg-gray-50/50 border-b border-gray-50">
+                    <td className="text-gray-500 text-sm font-medium">
+                      {(currentPage - 1) * itemsPerPage + idx + 1}
+                    </td>
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <div className="avatar">
+                          <div className="w-10 h-10 rounded-full ring-2 ring-gray-100 overflow-hidden">
+                            <img
+                              src={u.avatar || "https://i.ibb.co/CpDtbhR/default-avatar.png"}
+                              alt={u.name}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                        </div>
+                        <div>
+                          <p className="font-bold text-gray-800 text-sm">{u.name}</p>
+                          <p className="text-gray-500 text-xs">{u.email}</p>
                         </div>
                       </div>
-                      <div>
-                        <div className="font-bold text-gray-800">{u.name}</div>
-                        <div className="text-sm opacity-50">{u.email}</div>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="dropdown dropdown-hover">
-                      <div tabIndex={0} role="button" className={`badge badge-sm capitalize m-1 ${u.role === 'admin' ? 'badge-error text-white' : u.role === 'volunteer' ? 'badge-warning text-white' : 'badge-ghost'}`}>
-                        {u.role === 'admin' && <Shield className="w-3 h-3 mr-1" />}
-                        {u.role === 'donor' && <UserIcon className="w-3 h-3 mr-1" />}
-                        {u.role}
-                      </div>
-                      <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-32 border border-gray-100">
-                        <li><button onClick={() => handleRoleChange(u._id, 'donor')}>Donor</button></li>
-                        <li><button onClick={() => handleRoleChange(u._id, 'volunteer')}>Volunteer</button></li>
-                        <li><button onClick={() => handleRoleChange(u._id, 'admin')} className="text-red-500 hover:bg-red-50">Admin</button></li>
-                      </ul>
-                    </div>
-                  </td>
-                  <td>
-                    <div className={`badge badge-sm badge-outline capitalize ${u.status === 'active' ? 'text-green-600 border-green-600' : 'text-red-600 border-red-600'}`}>
-                      {u.status}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="flex items-center gap-2">
-                      {u.status === 'active' ? (
-                        <button 
-                          onClick={() => handleStatusChange(u._id, 'blocked')}
-                          className="btn btn-xs btn-outline btn-error gap-1"
-                        >
-                          <Ban className="w-3 h-3" /> Block
-                        </button>
+                    </td>
+                    <td>
+                      {u.bloodGroup ? (
+                        <span className="font-bold text-[#e11d48] bg-[#fff1f2] px-2 py-1 rounded text-sm">
+                          {u.bloodGroup}
+                        </span>
                       ) : (
-                        <button 
-                          onClick={() => handleStatusChange(u._id, 'active')}
-                          className="btn btn-xs btn-outline btn-success gap-1"
-                        >
-                          <Activity className="w-3 h-3" /> Unblock
-                        </button>
+                        <span className="text-gray-400 text-xs">N/A</span>
                       )}
-                    </div>
-                  </td>
-                </tr>
+                    </td>
+                    <td className="text-gray-600 text-sm">
+                      {u.upazila && u.district
+                        ? `${u.upazila}, ${u.district}`
+                        : <span className="text-gray-400 text-xs">Not set</span>
+                      }
+                    </td>
+                    <td>
+                      <span className={`badge badge-sm capitalize ${getRoleBadgeClass(u.role)}`}>
+                        {u.role}
+                      </span>
+                    </td>
+                    <td>
+                      <span className={`badge badge-sm capitalize ${u.status === "active" ? "badge-success text-white" : "badge-error text-white"}`}>
+                        {u.status}
+                      </span>
+                    </td>
+                    <td>
+                      {/* Don't allow editing yourself */}
+                      {u._id !== user?._id ? (
+                        <div className="flex flex-wrap gap-2">
+                          {/* Role change dropdown */}
+                          <div className="dropdown dropdown-end">
+                            <label
+                              tabIndex={0}
+                              className="btn btn-xs btn-outline btn-info gap-1 cursor-pointer"
+                            >
+                              <Shield className="w-3 h-3" />
+                              Role
+                            </label>
+                            <ul
+                              tabIndex={0}
+                              className="dropdown-content z-[10] menu p-2 shadow-lg bg-white rounded-box w-36 border border-gray-100 mt-1"
+                            >
+                              {ROLES.map(role => (
+                                <li key={role}>
+                                  <button
+                                    onClick={() => handleRoleChange(u._id, role)}
+                                    className={`capitalize text-sm ${u.role === role ? "font-bold text-[#e11d48]" : ""}`}
+                                  >
+                                    {role}
+                                  </button>
+                                </li>
+                              ))}
+                            </ul>
+                          </div>
+
+                          {/* Status toggle */}
+                          {u.status === "active" ? (
+                            <button
+                              onClick={() => handleStatusChange(u._id, "blocked")}
+                              className="btn btn-xs btn-outline btn-error gap-1"
+                              title="Block User"
+                            >
+                              <UserX className="w-3 h-3" />
+                              Block
+                            </button>
+                          ) : (
+                            <button
+                              onClick={() => handleStatusChange(u._id, "active")}
+                              className="btn btn-xs btn-outline btn-success gap-1"
+                              title="Activate User"
+                            >
+                              <UserCheck className="w-3 h-3" />
+                              Activate
+                            </button>
+                          )}
+                        </div>
+                      ) : (
+                        <span className="text-xs text-gray-400 italic">You</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="p-4 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <p className="text-sm text-gray-500">
+              Showing {(currentPage - 1) * itemsPerPage + 1}–{Math.min(currentPage * itemsPerPage, filteredUsers.length)} of {filteredUsers.length} users
+            </p>
+            <div className="join">
+              <button
+                className="join-item btn btn-sm"
+                disabled={currentPage === 1}
+                onClick={() => setCurrentPage(prev => prev - 1)}
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                <button
+                  key={page}
+                  className={`join-item btn btn-sm ${currentPage === page ? "btn-active bg-[#e11d48] text-white border-[#e11d48]" : ""}`}
+                  onClick={() => setCurrentPage(page)}
+                >
+                  {page}
+                </button>
               ))}
-            </tbody>
-          </table>
-        </div>
+              <button
+                className="join-item btn btn-sm"
+                disabled={currentPage === totalPages}
+                onClick={() => setCurrentPage(prev => prev + 1)}
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
