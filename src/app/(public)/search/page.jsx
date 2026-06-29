@@ -48,8 +48,8 @@ export default function SearchPage() {
     setHasSearched(true);
     
     try {
-      const { data } = await userService.getAllUsers();
-      const filteredDonors = data.filter(u => u.role === "donor").filter(donor => {
+      const { data } = await userService.getPublicDonors();
+      const filteredDonors = data.filter(donor => {
         let match = true;
         if (formData.bloodGroup && donor.bloodGroup !== formData.bloodGroup) match = false;
         if (formData.district && donor.district !== formData.district) match = false;
@@ -59,6 +59,7 @@ export default function SearchPage() {
       setResults(filteredDonors);
     } catch (error) {
       console.error("Search failed:", error);
+      alert(`Search failed: ${error.response?.data?.error || error.message}`);
     } finally {
       setLoading(false);
     }

@@ -81,6 +81,10 @@ export const userService = {
     const res = await api.get('/users');
     return res.data;
   },
+  getPublicDonors: async () => {
+    const res = await api.get('/donors');
+    return res.data;
+  },
   updateUserRole: async (id, role) => {
     const res = await api.patch(`/users/${id}/role`, { role });
     return res.data;
