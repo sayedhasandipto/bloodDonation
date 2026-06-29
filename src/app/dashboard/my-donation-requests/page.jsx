@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { donationService } from "@/services/api";
 import Link from "next/link";
-import { Clock, Eye, Edit, Trash2 } from "lucide-react";
+import { Clock, Eye, Edit, Trash2, Filter, Droplets } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function MyDonationRequestsPage() {
@@ -72,20 +72,25 @@ export default function MyDonationRequestsPage() {
           <p className="text-gray-500">Track and manage your blood donation requests.</p>
         </div>
         
-        <select 
-          className="select select-bordered" 
-          value={filter} 
-          onChange={(e) => {
-            setFilter(e.target.value);
-            setCurrentPage(1); // reset to page 1 on filter change
-          }}
-        >
-          <option value="all">All Statuses</option>
-          <option value="pending">Pending</option>
-          <option value="inprogress">In Progress</option>
-          <option value="done">Done</option>
-          <option value="canceled">Canceled</option>
-        </select>
+        <div className="relative group">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Filter className="w-5 h-5 text-gray-400 group-focus-within:text-[#e11d48] transition-colors" />
+          </div>
+          <select 
+            className="select select-bordered pl-10 bg-white text-gray-800 pr-10 shadow-sm border-gray-200 hover:border-[#e11d48] focus:border-[#e11d48] focus:ring-1 focus:ring-[#e11d48] transition-all w-full md:w-56 appearance-none cursor-pointer" 
+            value={filter} 
+            onChange={(e) => {
+              setFilter(e.target.value);
+              setCurrentPage(1); // reset to page 1 on filter change
+            }}
+          >
+            <option value="all">All Statuses</option>
+            <option value="pending">Pending</option>
+            <option value="inprogress">In Progress</option>
+            <option value="done">Done</option>
+            <option value="canceled">Canceled</option>
+          </select>
+        </div>
       </div>
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
@@ -93,8 +98,12 @@ export default function MyDonationRequestsPage() {
           {loading ? (
             <div className="p-10 text-center text-gray-400">Loading...</div>
           ) : currentItems.length === 0 ? (
-            <div className="p-10 text-center text-gray-400">
-              No requests found.
+            <div className="p-16 text-center flex flex-col items-center justify-center">
+              <div className="w-20 h-20 bg-gray-50 rounded-full flex items-center justify-center mb-4">
+                <Droplets className="w-10 h-10 text-gray-300" />
+              </div>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">No requests found</h3>
+              <p className="text-gray-500 max-w-md mx-auto">You haven't made any blood donation requests that match this status.</p>
             </div>
           ) : (
             <div className="overflow-x-auto">
