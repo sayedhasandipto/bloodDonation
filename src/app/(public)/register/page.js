@@ -12,10 +12,10 @@ export default function RegisterPage() {
   const { register } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
+
   const [districts, setDistricts] = useState([]);
   const [upazilas, setUpazilas] = useState([]);
-  
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,7 +25,7 @@ export default function RegisterPage() {
     password: "",
     confirmPassword: "",
   });
-  
+
   const [avatarFile, setAvatarFile] = useState(null);
 
   useEffect(() => {
@@ -54,7 +54,7 @@ export default function RegisterPage() {
   const uploadToImageBB = async (file) => {
     const imgData = new FormData();
     imgData.append("image", file);
-    const apiKey = process.env.NEXT_PUBLIC_IMGBB_API_KEY || "YOUR_IMGBB_API_KEY_HERE"; 
+    const apiKey = process.env.IMGBB_API_KEY;
     const response = await fetch(`https://api.imgbb.com/1/upload?key=${apiKey}`, {
       method: "POST",
       body: imgData,
@@ -69,13 +69,13 @@ export default function RegisterPage() {
   const handleRegister = async (e) => {
     e.preventDefault();
     setError("");
-    
+
     if (formData.password !== formData.confirmPassword) {
       return setError("Passwords do not match");
     }
 
     setLoading(true);
-    
+
     try {
       let avatarUrl = "";
       if (avatarFile) {
@@ -174,15 +174,15 @@ export default function RegisterPage() {
                 <input type="password" name="confirmPassword" placeholder="••••••••" className="input input-bordered w-full bg-white text-gray-900 border-gray-300 focus:border-[#e11d48] focus:ring-1 focus:ring-[#e11d48]" value={formData.confirmPassword} onChange={handleChange} required />
               </div>
             </div>
-            
+
             {error && (
               <div className="alert alert-error text-sm">
                 <span>{error}</span>
               </div>
             )}
 
-            <button 
-              type="submit" 
+            <button
+              type="submit"
               className={`btn bg-[#e11d48] hover:bg-[#be123c] border-none text-white w-full mt-4`}
               disabled={loading}
             >
