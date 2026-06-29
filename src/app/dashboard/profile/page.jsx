@@ -119,7 +119,12 @@ export default function ProfilePage() {
 
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         {/* Header Cover */}
-        <div className="h-32 bg-gradient-to-r from-[#e11d48] to-[#9f1239]"></div>
+        <div 
+          className="h-48 bg-cover bg-center relative"
+          style={{ backgroundImage: 'url("https://images.unsplash.com/photo-1579154204601-01588f351e67?q=80&w=2070&auto=format&fit=crop")' }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-r from-[#e11d48]/80 to-[#9f1239]/90"></div>
+        </div>
         
         <div className="px-8 pb-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-end -mt-16 mb-8 gap-4">
