@@ -136,7 +136,7 @@ export default function HomePage() {
       </section>
 
       {/* Main Content Area */}
-      <section className="bg-gray-50 py-20">
+      <section className="bg-[#fdf6f6] py-20">
         {/* Featured Section - Recent Requests */}
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
@@ -215,7 +215,7 @@ export default function HomePage() {
       </section>
 
       {/* Featured Section - How it works */}
-      <section className="py-20 md:py-28 bg-white">
+      <section className="py-20 md:py-28 bg-[#fcfaf9]">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
           <div className="w-24 h-1 bg-[#e11d48] mx-auto mb-16 rounded-full"></div>
@@ -246,7 +246,7 @@ export default function HomePage() {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-20 md:py-28 bg-white">
+      <section className="py-20 md:py-28 bg-[#fdf6f6]">
         <div className="container mx-auto px-4 max-w-3xl">
           <div className="text-center mb-16">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Frequently Asked Questions</h2>
@@ -290,7 +290,7 @@ export default function HomePage() {
       </section>
 
       {/* Contact Us Section */}
-      <section className="py-20 md:py-28 bg-gray-50">
+      <section className="py-20 md:py-28 bg-[#fcfaf9]">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Contact Us</h2>
