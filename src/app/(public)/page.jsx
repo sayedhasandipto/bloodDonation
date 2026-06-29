@@ -55,7 +55,7 @@ export default function HomePage() {
         {/* Background Image with Overlay */}
         <div
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1524721696987-b9527df9e512?q=80&w=1333&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')" }}
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1638271522560-a247d127deb8?q=80&w=1315&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')" }}
         >
           <div className="absolute inset-0 bg-gradient-to-br from-gray-950/80 via-gray-900/40 to-gray-900/60 mix-blend-multiply"></div>
           <div className="absolute inset-0 bg-black/20"></div>
@@ -90,7 +90,7 @@ export default function HomePage() {
           <div className="container mx-auto max-w-5xl">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Card 1 */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
@@ -102,9 +102,9 @@ export default function HomePage() {
                 <h3 className="text-4xl font-extrabold text-white mb-1">15+</h3>
                 <p className="text-xs font-bold text-gray-300 tracking-widest uppercase">Active Donors</p>
               </motion.div>
-              
+
               {/* Card 2 */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
@@ -118,7 +118,7 @@ export default function HomePage() {
               </motion.div>
 
               {/* Card 3 */}
-              <motion.div 
+              <motion.div
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
