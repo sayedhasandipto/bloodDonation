@@ -63,7 +63,7 @@ export default function RegisterPage() {
     if (result.success) {
       return result.data.display_url;
     }
-    throw new Error("Failed to upload image");
+    throw new Error(result.error?.message || "Failed to upload image");
   };
 
   const handleRegister = async (e) => {
