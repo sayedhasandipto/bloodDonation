@@ -203,32 +203,20 @@ export default function AllUsersPage() {
                     <td>
                       {/* Don't allow editing yourself */}
                       {u._id !== user?._id ? (
-                        <div className="flex flex-wrap gap-2">
-                          {/* Role change dropdown */}
-                          <div className="dropdown dropdown-end">
-                            <label
-                              tabIndex={0}
-                              className="btn btn-xs btn-outline btn-info gap-1 cursor-pointer"
-                            >
-                              <Shield className="w-3 h-3" />
-                              Role
-                            </label>
-                            <ul
-                              tabIndex={0}
-                              className="dropdown-content z-[10] menu p-2 shadow-lg bg-white rounded-box w-36 border border-gray-100 mt-1"
-                            >
-                              {ROLES.map(role => (
-                                <li key={role}>
-                                  <button
-                                    onClick={() => handleRoleChange(u._id, role)}
-                                    className={`capitalize text-sm ${u.role === role ? "font-bold text-[#e11d48]" : ""}`}
-                                  >
-                                    {role}
-                                  </button>
-                                </li>
-                              ))}
-                            </ul>
-                          </div>
+                        <div className="flex flex-wrap gap-2 items-center">
+                          {/* Role change — native select to avoid overflow clipping */}
+                          <select
+                            value={u.role}
+                            onChange={(e) => handleRoleChange(u._id, e.target.value)}
+                            className="select select-bordered select-xs bg-white text-gray-800 font-medium capitalize w-28"
+                            title="Change Role"
+                          >
+                            {ROLES.map(role => (
+                              <option key={role} value={role} className="capitalize">
+                                {role.charAt(0).toUpperCase() + role.slice(1)}
+                              </option>
+                            ))}
+                          </select>
 
                           {/* Status toggle */}
                           {u.status === "active" ? (

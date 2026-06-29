@@ -139,7 +139,7 @@ export default function RegisterPage() {
               </div>
               <div className="form-control">
                 <label className="label"><span className="label-text font-medium text-gray-700">Avatar</span></label>
-                <input type="file" accept="image/*" className="file-input file-input-bordered w-full bg-white text-gray-900 border-gray-300 focus:border-[#e11d48] focus:ring-1 focus:ring-[#e11d48]" onChange={(e) => setAvatarFile(e.target.files[0])} required />
+                <input type="file" accept="image/*" className="file-input file-input-bordered w-full bg-white text-gray-900 border-gray-300 focus:border-[#e11d48] focus:ring-1 focus:ring-[#e11d48]" onChange={(e) => setAvatarFile(e.target.files[0])} />
               </div>
             </div>
 

@@ -100,19 +100,22 @@ export default function AllRequestsPage() {
                     <div className="text-xs text-gray-500">{r.requesterEmail}</div>
                   </td>
                   <td>
-                    <div className="dropdown dropdown-hover">
-                      <div tabIndex={0} role="button" className={`badge badge-sm capitalize ${getStatusColor(r.donationStatus)}`}>
+                    {(user?.role === 'admin' || user?.role === 'volunteer') ? (
+                      <select
+                        value={r.donationStatus}
+                        onChange={(e) => handleStatusChange(r._id, e.target.value)}
+                        className="select select-bordered select-xs bg-white text-gray-800 font-medium capitalize w-28"
+                      >
+                        <option value="pending">Pending</option>
+                        <option value="inprogress">In Progress</option>
+                        <option value="done">Done</option>
+                        <option value="canceled">Canceled</option>
+                      </select>
+                    ) : (
+                      <div className={`badge badge-sm capitalize ${getStatusColor(r.donationStatus)}`}>
                         {r.donationStatus}
                       </div>
-                      {(user?.role === 'admin' || user?.role === 'volunteer') && (
-                        <ul tabIndex={0} className="dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-36 border border-gray-100">
-                          <li><button onClick={() => handleStatusChange(r._id, 'pending')}>Pending</button></li>
-                          <li><button onClick={() => handleStatusChange(r._id, 'inprogress')}>In Progress</button></li>
-                          <li><button onClick={() => handleStatusChange(r._id, 'done')} className="text-green-600">Done</button></li>
-                          <li><button onClick={() => handleStatusChange(r._id, 'canceled')} className="text-red-600">Canceled</button></li>
-                        </ul>
-                      )}
-                    </div>
+                    )}
                   </td>
                   {user?.role === 'admin' || user?.role === 'volunteer' ? (
                     <td>
