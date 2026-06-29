@@ -51,7 +51,7 @@ export default function HomePage() {
   return (
     <div className="w-full">
       {/* Hero Banner */}
-      <section className="relative w-full min-h-[500px] flex items-center justify-center text-white pt-28 pb-32 md:pt-36 md:pb-44">
+      <section className="relative w-full min-h-[600px] flex flex-col items-center justify-center text-white pt-28 pb-16 md:pt-36">
         {/* Background Image with Overlay */}
         <div
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
@@ -84,12 +84,9 @@ export default function HomePage() {
             </div>
           </motion.div>
         </div>
-      </section>
 
-      {/* Main Content Area */}
-      <section className="bg-gray-50 pb-20">
-        {/* Stats Cards */}
-        <div className="relative z-20 px-4 -mt-20 md:-mt-24 mb-20">
+        {/* Stats Cards - Glassmorphism */}
+        <div className="w-full relative z-20 px-4 mt-16 md:mt-24">
           <div className="container mx-auto max-w-5xl">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {/* Card 1 */}
@@ -97,13 +94,13 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.2 }}
-                className="bg-white rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center text-center border border-gray-100"
+                className="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center border border-white/20"
               >
-                <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
-                  <Users className="w-5 h-5 text-[#f43f5e]" />
+                <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
+                  <Users className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="text-4xl font-extrabold text-gray-900 mb-1">15+</h3>
-                <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">Active Donors</p>
+                <h3 className="text-4xl font-extrabold text-white mb-1">15+</h3>
+                <p className="text-xs font-bold text-gray-300 tracking-widest uppercase">Active Donors</p>
               </motion.div>
               
               {/* Card 2 */}
@@ -111,13 +108,13 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.3 }}
-                className="bg-white rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center text-center border border-gray-100"
+                className="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center border border-white/20"
               >
-                <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
-                  <DollarSign className="w-5 h-5 text-[#f43f5e]" />
+                <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
+                  <DollarSign className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="text-4xl font-extrabold text-gray-900 mb-1">$12,886</h3>
-                <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">Total Funding</p>
+                <h3 className="text-4xl font-extrabold text-white mb-1">$12,886</h3>
+                <p className="text-xs font-bold text-gray-300 tracking-widest uppercase">Total Funding</p>
               </motion.div>
 
               {/* Card 3 */}
@@ -125,18 +122,21 @@ export default function HomePage() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, delay: 0.4 }}
-                className="bg-white rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center text-center border border-gray-100"
+                className="bg-white/10 backdrop-blur-md rounded-3xl p-8 shadow-2xl flex flex-col items-center text-center border border-white/20"
               >
-                <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
-                  <Droplet className="w-5 h-5 text-[#f43f5e]" />
+                <div className="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center mb-4">
+                  <Droplet className="w-5 h-5 text-white" />
                 </div>
-                <h3 className="text-4xl font-extrabold text-gray-900 mb-1">19</h3>
-                <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">Total Requests</p>
+                <h3 className="text-4xl font-extrabold text-white mb-1">19</h3>
+                <p className="text-xs font-bold text-gray-300 tracking-widest uppercase">Total Requests</p>
               </motion.div>
             </div>
           </div>
         </div>
+      </section>
 
+      {/* Main Content Area */}
+      <section className="bg-gray-50 py-20">
         {/* Featured Section - Recent Requests */}
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
