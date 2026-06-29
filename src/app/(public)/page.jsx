@@ -53,22 +53,23 @@ export default function HomePage() {
       {/* Hero Banner */}
       <section className="relative w-full min-h-[500px] flex items-center justify-center text-white pt-28 pb-32 md:pt-36 md:pb-44">
         {/* Background Image with Overlay */}
-        <div 
+        <div
           className="absolute inset-0 z-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1615461066841-6116e6e02428?ixlib=rb-4.0.3&auto=format&fit=crop&w=2000&q=80')" }}
+          style={{ backgroundImage: "url('https://images.unsplash.com/photo-1524721696987-b9527df9e512?q=80&w=1333&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')" }}
         >
-          <div className="absolute inset-0 bg-gray-900/75"></div>
+          <div className="absolute inset-0 bg-gradient-to-br from-gray-950/80 via-gray-900/40 to-gray-900/60 mix-blend-multiply"></div>
+          <div className="absolute inset-0 bg-black/20"></div>
         </div>
 
         <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold mb-4 tracking-tight text-white leading-tight">
               Saving Lives, <br className="hidden sm:block" />
-              <span className="text-[#f43f5e]">One Drop</span> at a Time
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-[#e11d48]">One Drop</span> at a Time
             </h1>
             <p className="text-base sm:text-lg md:text-xl mb-10 text-gray-200 max-w-2xl mx-auto font-medium">
               Connect directly with 19 pending requests or join our community of donors to help save more lives.
@@ -85,57 +86,58 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Stats Cards */}
-      <div className="relative z-20 px-4 -mt-20 md:-mt-24 pb-12">
-        <div className="container mx-auto max-w-5xl">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Card 1 */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="bg-white rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center text-center border border-gray-50"
-            >
-              <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
-                <Users className="w-5 h-5 text-[#f43f5e]" />
-              </div>
-              <h3 className="text-4xl font-extrabold text-gray-900 mb-1">15+</h3>
-              <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">Active Donors</p>
-            </motion.div>
-            
-            {/* Card 2 */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="bg-white rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center text-center border border-gray-50"
-            >
-              <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
-                <DollarSign className="w-5 h-5 text-[#f43f5e]" />
-              </div>
-              <h3 className="text-4xl font-extrabold text-gray-900 mb-1">$12,886</h3>
-              <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">Total Funding</p>
-            </motion.div>
+      {/* Main Content Area */}
+      <section className="bg-gray-50 pb-20">
+        {/* Stats Cards */}
+        <div className="relative z-20 px-4 -mt-20 md:-mt-24 mb-20">
+          <div className="container mx-auto max-w-5xl">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Card 1 */}
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.2 }}
+                className="bg-white rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center text-center border border-gray-100"
+              >
+                <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
+                  <Users className="w-5 h-5 text-[#f43f5e]" />
+                </div>
+                <h3 className="text-4xl font-extrabold text-gray-900 mb-1">15+</h3>
+                <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">Active Donors</p>
+              </motion.div>
+              
+              {/* Card 2 */}
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="bg-white rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center text-center border border-gray-100"
+              >
+                <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
+                  <DollarSign className="w-5 h-5 text-[#f43f5e]" />
+                </div>
+                <h3 className="text-4xl font-extrabold text-gray-900 mb-1">$12,886</h3>
+                <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">Total Funding</p>
+              </motion.div>
 
-            {/* Card 3 */}
-            <motion.div 
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="bg-white rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center text-center border border-gray-50"
-            >
-              <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
-                <Droplet className="w-5 h-5 text-[#f43f5e]" />
-              </div>
-              <h3 className="text-4xl font-extrabold text-gray-900 mb-1">19</h3>
-              <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">Total Requests</p>
-            </motion.div>
+              {/* Card 3 */}
+              <motion.div 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+                className="bg-white rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] flex flex-col items-center text-center border border-gray-100"
+              >
+                <div className="w-12 h-12 bg-rose-50 rounded-2xl flex items-center justify-center mb-4">
+                  <Droplet className="w-5 h-5 text-[#f43f5e]" />
+                </div>
+                <h3 className="text-4xl font-extrabold text-gray-900 mb-1">19</h3>
+                <p className="text-xs font-bold text-gray-400 tracking-widest uppercase">Total Requests</p>
+              </motion.div>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Featured Section - Recent Requests */}
-      <section className="py-20 bg-gray-50">
+        {/* Featured Section - Recent Requests */}
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Urgent Blood Requests</h2>
@@ -150,7 +152,7 @@ export default function HomePage() {
           ) : featuredRequests.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {featuredRequests.map((req, idx) => (
-                <motion.div 
+                <motion.div
                   key={req._id}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
@@ -187,7 +189,7 @@ export default function HomePage() {
                       </div>
                     </div>
                   </div>
-                  
+
                   <Link href={`/donation-requests/${req._id}`} className="block text-center py-3 w-full border border-[#e11d48] text-[#e11d48] font-bold rounded-xl hover:bg-[#e11d48] hover:text-white transition-colors group">
                     View Details <ArrowRight className="inline w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
                   </Link>
@@ -217,14 +219,14 @@ export default function HomePage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
           <div className="w-24 h-1 bg-[#e11d48] mx-auto mb-16 rounded-full"></div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
             {[
               { icon: <Users className="w-12 h-12 text-[#e11d48]" />, title: "Register", desc: "Create an account in minutes and join our network of life-savers." },
               { icon: <Activity className="w-12 h-12 text-[#e11d48]" />, title: "Find Requests", desc: "Browse urgent blood requests in your local area easily." },
               { icon: <Heart className="w-12 h-12 text-[#e11d48]" />, title: "Save a Life", desc: "Donate blood to hospitals and individuals in critical need." }
             ].map((item, idx) => (
-              <motion.div 
+              <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -254,8 +256,8 @@ export default function HomePage() {
 
           <div className="space-y-4">
             {faqs.map((faq, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className={`border border-gray-200 rounded-2xl overflow-hidden transition-all duration-300 ${openFaqIndex === index ? 'shadow-md border-[#e11d48]/30' : 'hover:border-gray-300 hover:shadow-sm'}`}
               >
                 <button
@@ -295,12 +297,12 @@ export default function HomePage() {
             <div className="w-24 h-1 bg-[#e11d48] mx-auto rounded-full"></div>
           </div>
           <div className="max-w-5xl mx-auto rounded-3xl shadow-xl overflow-hidden flex flex-col md:flex-row">
-            
+
             {/* Left: Contact Info */}
             <div className="md:w-5/12 bg-[#be123c] text-white p-10 md:p-12 flex flex-col justify-center">
               <h3 className="text-2xl md:text-3xl font-bold mb-4 text-white">Get in Touch</h3>
               <p className="text-[#fecdd3] mb-8">Have questions about donation or need technical support? We&apos;re here to help.</p>
-              
+
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <Phone className="w-6 h-6 mt-1 text-[#fda4af]" />
@@ -325,7 +327,7 @@ export default function HomePage() {
                 </div>
               </div>
             </div>
-            
+
             {/* Right: Contact Form */}
             <div className="md:w-7/12 bg-white p-10 md:p-12">
               <h3 className="text-2xl font-bold text-gray-900 mb-6">Send us a Message</h3>
@@ -353,7 +355,7 @@ export default function HomePage() {
                 </button>
               </form>
             </div>
-            
+
           </div>
         </div>
       </section>
